@@ -1,16 +1,18 @@
 var gulp = require('gulp'),
     jshint = require('gulp-jshint'),
     plumber = require('gulp-plumber'),
-    notify = require('gulp-notify');
+    notify = require('gulp-notify'),
+    mocha = require('gulp-mocha');
 
 var paths = {
-  server: ['server/**/*.js']
+  scripts: ['server/**/*.js'],
+  specs: ['specs/*.js']
 }
 
 gulp.task('serverBuild', ['lint','test']);
 
 gulp.task('lint', function(){
-  return gulp.src(paths.server)
+  return gulp.src(paths.scripts)
     .pipe(plumber())
     .pipe(jshint())
     .pipe(jshint.reporter('jshint-stylish'))
@@ -18,5 +20,6 @@ gulp.task('lint', function(){
 });
 
 gulp.task('test',function(){
-
+  return gulp.src(paths.specs)
+    .pipe(mocha());
 });
