@@ -13,6 +13,7 @@ var paths = {
 }
 
 gulp.task('serverBuild', ['lint','test']);
+gulp.task('default',['serverBuild', 'dbConnect', 'nodemon']);
 
 gulp.task('lint', function(){
   return gulp.src(paths.scripts)
