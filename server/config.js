@@ -2,6 +2,9 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var middle = require('./middleware');
 
+var mongoURI = 'mongodb://localhost/commutrDev';
+mongoose.connect(process.env.PORT || mongoURI);
+
 module.exports = exports = function(app, express, routers){
   app.set('port', process.env.PORT || 8080);
   app.set('base url', process.env.URL || 'http://localhost');
