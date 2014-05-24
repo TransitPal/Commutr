@@ -11,4 +11,14 @@ describe('Server', function(){
       .expect(200)
       .end(done);
   });
+
+  it('should return a 200 status and route array on a get request to /api/v1/routes',function(done){
+    request(app)
+      .get('/api/v1/routes')
+      .expect(200)
+      .expect(function(res){
+        expect(res.body).to.be.an('array');
+      })
+      .end(done);
+  })
 });
