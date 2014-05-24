@@ -23,8 +23,19 @@ describe('Server', function(){
   })
 
   it('should return a 201 status on a post request to /api/v1/user',function(done){
+    var user = {
+      name: 'Nick',
+      email: 'nicksemail@gmail.com',
+      homeAddress: 'San Francisco',
+      workAddress: '944 Market St, San Francisco',
+      routine: {
+        workTime: 9,
+        homeTime: 2
+      }
+    };
+    
     request(app)
-      .post('/api/v1/user')
+      .post('/api/v1/user?user='+JSON.stringify(user))
       .expect(201)
       .end(done);
   })

@@ -9,6 +9,8 @@ app.get('/', helpers.placeholder);
 
 app.get('/api/v1/routes', helpers.getRoutes);
 
-app.post('/api/v1/user', helpers.saveUser);
+app.post('/api/v1/user', function(req, res){
+  helpers.saveUser(req.query, res);
+});
 
 module.exports = app;

@@ -1,8 +1,8 @@
 var db = require('mongoose');
 
-exports.User = mongoose.model('User',{
+exports.User = db.model('User',{
   name: String,
-  id: Number,
+  email: {type: String, unique: true, required: true},
   homeAddress: String,
   homeLocation: {lat: Number, lng: Number},
   workAddress: String,
