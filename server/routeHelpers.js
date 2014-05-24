@@ -5,3 +5,7 @@ exports.placeholder = function(req, res){
 exports.getRoutes = function(req, res){
   res.send(200, [{route: null}]);
 }
+
+exports.saveUser = function(req, res){
+  res.send(201)
+}

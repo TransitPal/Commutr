@@ -7,7 +7,8 @@ require('./config.js')(app, express, routers);
 
 app.get('/', helpers.placeholder);
 
-app.get('/api/v1/routes',helpers.getRoutes);
+app.get('/api/v1/routes', helpers.getRoutes);
 
+app.post('/api/v1/user', helpers.saveUser);
 
 module.exports = app;

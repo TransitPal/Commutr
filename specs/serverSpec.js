@@ -21,4 +21,11 @@ describe('Server', function(){
       })
       .end(done);
   })
+
+  it('should return a 201 status on a post request to /api/v1/user',function(done){
+    request(app)
+      .post('/api/v1/user')
+      .expect(201)
+      .end(done);
+  })
 });
