@@ -1,11 +1,8 @@
 var models = require('../db/models/user');
+var maps = require('./mapUtils');
 
 exports.placeholder = function(req, res){
   res.send(200, 'Hello, world! ^_^');
-};
-
-exports.getRoutes = function(req, res){
-  res.send(200, [{route: null}]);
 };
 
 exports.saveUser = function(settings, res){
@@ -30,4 +27,14 @@ exports.saveUser = function(settings, res){
   });
 
   res.send(201);
+};
+
+exports.getRoutes = function(req, res) {
+  maps.getDirections('37.7577,-122.4376', '37.783542,-122.408943', 
+    function(err, data){
+      if (!err) { 
+        res.end(JSON.stringify(data)); 
+      }
+      else { res.end(JSON.stringify(err)); }
+    });
 };
