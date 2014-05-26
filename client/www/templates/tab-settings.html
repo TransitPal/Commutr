@@ -1,0 +1,28 @@
+<ion-view title="Settings">
+  <ion-content class="has-header padding">
+    <h4>Enter Your Information</h4>
+
+    <label class="item item-input">
+      <span class="input-label">Home Address</span>
+      <input ng-model="user.homeAddress" type="text">
+    </label>
+    <label class="item item-input">
+      <span class="input-label">Work Address</span>
+      <input ng-model="user.workAddress" type="text">
+    </label>
+    <label class="item item-input">
+      <span class="input-label">Work Start</span>
+      <input ng-model="user.workTime" type="text">
+    </label>
+    <label class="item item-input">
+      <span class="input-label">Work End</span>
+      <input ng-model="user.homeTime" type="text">
+    </label>
+
+    <ion-footer-bar class="bar-dark">
+      <button class="button" ng-click="postSettings(user)">
+        <i class="icon ion-compose"></i>
+      </button>
+    </ion-footer-bar>
+   </ion-content>
+</ion-view>
