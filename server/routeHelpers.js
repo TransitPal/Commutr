@@ -8,8 +8,7 @@ exports.getRoutes = function(req, res){
   res.send(200, [{route: null}]);
 };
 
-exports.saveUser = function(req, res){
-  var settings = req.user;
+exports.saveUser = function(settings, res){
   var user = new models.User({
     name: settings.name,
     email: settings.email,
@@ -19,7 +18,10 @@ exports.saveUser = function(req, res){
     workAddress: settings.workAddress,
     // Seed data until Google APIs are set up
     workLocation: {lat: 37.7746071, lng: -122.4260718},
-    routine: settings.routine
+    routine: {
+      workTime: settings.workTime,
+      homeTime: settings.homeTime
+    }
   });
 
   user.save(function(err,user){
