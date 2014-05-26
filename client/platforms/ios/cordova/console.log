@@ -34,3 +34,30 @@ Terminating in response to SpringBoard's termination.
 2014-05-23 17:30:54.355 HelloCordova[2248:70b] Resetting plugins due to page load.
 2014-05-23 17:30:54.532 HelloCordova[2248:70b] Finished load of: file:///Users/nwei/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/41AF67FF-7C22-4566-AE0B-6BEC1841695E/HelloCordova.app/www/index.html
 Terminating in response to SpringBoard's termination.
+2014-05-26 13:09:24.335 HelloCordova[13296:70b] Multi-tasking -> Device: YES, App: YES
+2014-05-26 13:09:24.361 HelloCordova[13296:70b] Unlimited access to network resources
+2014-05-26 13:09:24.519 HelloCordova[13296:70b] [CDVTimer][keyboard] 0.083029ms
+2014-05-26 13:09:24.519 HelloCordova[13296:70b] CDVPlugin class CDVStatusBar (pluginName: statusbar) does not exist.
+2014-05-26 13:09:24.520 HelloCordova[13296:70b] [CDVTimer][statusbar] 0.433981ms
+2014-05-26 13:09:24.520 HelloCordova[13296:70b] [CDVTimer][TotalPluginStartup] 1.439989ms
+2014-05-26 13:09:24.787 HelloCordova[13296:70b] Resetting plugins due to page load.
+2014-05-26 13:09:25.441 HelloCordova[13296:70b] Finished load of: file:///Users/nwei/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/41AF67FF-7C22-4566-AE0B-6BEC1841695E/HelloCordova.app/www/index.html#/tab/route
+Terminating in response to SpringBoard's termination.
+2014-05-26 13:15:30.353 HelloCordova[13548:70b] Multi-tasking -> Device: YES, App: YES
+2014-05-26 13:15:30.362 HelloCordova[13548:70b] Unlimited access to network resources
+2014-05-26 13:15:30.384 HelloCordova[13548:70b] [CDVTimer][keyboard] 0.078976ms
+2014-05-26 13:15:30.384 HelloCordova[13548:70b] CDVPlugin class CDVStatusBar (pluginName: statusbar) does not exist.
+2014-05-26 13:15:30.385 HelloCordova[13548:70b] [CDVTimer][statusbar] 0.528038ms
+2014-05-26 13:15:30.386 HelloCordova[13548:70b] [CDVTimer][TotalPluginStartup] 1.823008ms
+2014-05-26 13:15:30.535 HelloCordova[13548:70b] Resetting plugins due to page load.
+2014-05-26 13:15:30.998 HelloCordova[13548:70b] Finished load of: file:///Users/nwei/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/41AF67FF-7C22-4566-AE0B-6BEC1841695E/HelloCordova.app/www/index.html#/tab/route
+Terminating in response to SpringBoard's termination.
+2014-05-26 13:24:53.833 HelloCordova[13808:70b] Multi-tasking -> Device: YES, App: YES
+2014-05-26 13:24:53.843 HelloCordova[13808:70b] Unlimited access to network resources
+2014-05-26 13:24:53.864 HelloCordova[13808:70b] [CDVTimer][keyboard] 0.088990ms
+2014-05-26 13:24:53.865 HelloCordova[13808:70b] CDVPlugin class CDVStatusBar (pluginName: statusbar) does not exist.
+2014-05-26 13:24:53.865 HelloCordova[13808:70b] [CDVTimer][statusbar] 0.454009ms
+2014-05-26 13:24:53.866 HelloCordova[13808:70b] [CDVTimer][TotalPluginStartup] 1.587987ms
+2014-05-26 13:24:53.996 HelloCordova[13808:70b] Resetting plugins due to page load.
+2014-05-26 13:24:54.343 HelloCordova[13808:70b] Finished load of: file:///Users/nwei/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/41AF67FF-7C22-4566-AE0B-6BEC1841695E/HelloCordova.app/www/index.html#/tab/route
+Terminating in response to SpringBoard's termination.

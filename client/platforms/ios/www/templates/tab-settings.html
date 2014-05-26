@@ -1,31 +1,28 @@
 <ion-view title="Settings">
   <ion-content class="has-header padding">
+    <h4>Enter Your Information</h4>
 
-<!--     <label class="item item-input">
+    <label class="item item-input">
       <span class="input-label">Home Address</span>
-      <input ng-model="user.home" type="text">
+      <input ng-model="user.homeAddress" type="text">
     </label>
     <label class="item item-input">
       <span class="input-label">Work Address</span>
-      <input ng-model="user.work" type="text">
+      <input ng-model="user.workAddress" type="text">
     </label>
     <label class="item item-input">
       <span class="input-label">Work Start</span>
-      <input ng-model="user.start" type="text">
+      <input ng-model="user.workTime" type="text">
     </label>
     <label class="item item-input">
       <span class="input-label">Work End</span>
-      <input ng-model="user.end" type="text">
+      <input ng-model="user.homeTime" type="text">
     </label>
- -->
-    <button class="button" ng-click="postSettings()">
-      <i class="icon ion-compose"></i>
-    </button>
 
-    <input class="form-control" type="text" placeholder="Enter Home Address" ng-model="user.home">
-    <input class="form-control" type="text" placeholder="Enter Work Address" ng-model="user.work">
-    <input class="form-control" type="text" placeholder="Enter Work Starting Time" ng-model="user.start">
-    <input class="form-control" type="text" placeholder="Enter Work Ending Time" ng-model="user.end">
-
+    <ion-footer-bar class="bar-dark">
+      <button class="button" ng-click="postSettings(user)">
+        <i class="icon ion-compose"></i>
+      </button>
+    </ion-footer-bar>
    </ion-content>
 </ion-view>
