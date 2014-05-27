@@ -1,43 +1,27 @@
 angular.module('app.controllers', [])
 
-.controller('RouteCtrl', ['$rootScope', '$scope', '$ionicLoading', '$q', function($rootScope, $scope, $ionicLoading, $q) {
+.controller('RouteCtrl', ['$scope', 'CustomPromises', 'ServerReq', '$ionicLoading', function($scope, CustomPromises, ServerReq, $ionicLoading) {
   // $scope.loading = $ionicLoading.show({
   //   content: 'Getting current location...',
   //   showBackdrop: false
   // });
 
-/*  var p_geo = function() {
-    var deferred = $q.defer();
+  var directionsService = new google.maps.DirectionsService();
+  var directionsRenderer = new google.maps.DirectionsRenderer();
 
-    $rootScope.Scope.$apply(function() {
-      navigator.geolocation.getCurrentPosition(function(position) {
-        deferred.resolve(position);
-      },
-      function(err) {
-        deferred.reject(err);
-      });
-    });
-      
-    return deferred.promise;
-  };
-
-  p_geo()
+  CustomPromises.p_geoloc()
   .then(function(position) {
-    $scope.mapOptions = {
-      center: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
-      zoom: 16,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
-  });*/
+    var currentLoc = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
-  navigator.geolocation.getCurrentPosition(function(position) {
     mapOptions = {
-      center: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
+      center: currentLoc,
       zoom: 16,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 
     var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+    directionsRenderer.setMap(map);
 
     // Stop the side bar from dragging when mousedown/tapdown on the map
     google.maps.event.addDomListener(document.getElementById('map'), 'mousedown', function(e) {
@@ -45,16 +29,34 @@ angular.module('app.controllers', [])
       return false;
     });
 
-    $scope.map = map;
+    var request = {
+      origin: currentLoc,
+      destination: new google.maps.LatLng(37.7683909618184, -122.51089453697205),
+      travelMode: google.maps.TravelMode.DRIVING
+    };
+
+    directionsService.route(request, function(response, status) {
+      if (status == google.maps.DirectionsStatus.OK) {
+        directionsRenderer.setDirections(response);
+      }
+    });
+  }, function(err) {
+    console.log('error: ', err);
   });
+
+
+  // ServerReq.getReq('/routes')
+
+
 }])
 
-.controller('SettingsCtrl', ['$scope', 'ServerReq', function($scope, ServerReq) {
+.controller('SettingsCtrl', ['$rootScope', '$scope', 'ServerReq', function($rootScope, $scope, ServerReq) {
   $scope.postSettings = function(user){
     user.name = 'nick wei';
     user.email = 'nickwei@gmail.com';
     console.log('data sent to server: ', user);
-    ServerReq.postReq('127.0.0.1:8080/api/v1/user', user)
+    console.log('check: ', $rootScope.serverURL);
+    ServerReq.postReq($rootScope.serverURL + '/user', user)
     .then(function(data) {
       console.log('post data to server complete: ', data);
     });

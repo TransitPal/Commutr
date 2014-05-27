@@ -30,10 +30,9 @@ angular.module('app.controllers', [])
     };
   });*/
 
-  //navigator.geolocation.getCurrentPosition(function(position) {
+  navigator.geolocation.getCurrentPosition(function(position) {
     mapOptions = {
-      // center: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
-      center: new google.maps.LatLng(37.7749300, -122.4194200),
+      center: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
       zoom: 16,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
@@ -47,7 +46,7 @@ angular.module('app.controllers', [])
     });
 
     $scope.map = map;
-  // });
+  });
 }])
 
 .controller('SettingsCtrl', ['$scope', 'ServerReq', function($scope, ServerReq) {

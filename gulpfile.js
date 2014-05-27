@@ -9,7 +9,8 @@ var gulp = require('gulp'),
 
 var paths = {
   scripts: ['server/**/*.js'],
-  specs: ['specs/*.js']
+  specs: ['specs/*.js'],
+  client: ['']
 }
 
 gulp.task('serverBuild', ['lint','test']);
@@ -47,4 +48,18 @@ gulp.task('view',function(){
   }
   gulp.src('server.js')
     .pipe(open('',options))
-})
+});
+
+gulp.task('emulateIOS',function(){
+  return gulp.src(paths.client)
+    .pipe(shell([
+      'cd client && ionic platform ios && ionic build ios && ionic emulate ios'
+    ]));
+});
+
+gulp.task('emulateAndroid',function(){
+  return gulp.src(paths.client)
+    .pipe(shell([
+      'cd client && ionic platform android && ionic build android && ionic emulate android'
+    ]));
+});
