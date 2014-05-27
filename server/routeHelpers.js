@@ -30,11 +30,11 @@ exports.saveUser = function(settings, res){
 };
 
 exports.getRoutes = function(req, res) {
-  maps.getDirections('37.7577,-122.4376', '37.783542,-122.408943', 
-    function(err, data){
+  maps.getDirections('37.7577,-122.4376', '37.783542,-122.408943')
+  .then(function(err, data) {
       if (!err) { 
-        res.end(JSON.stringify(data)); 
+        res.send(200, JSON.stringify(data)); 
       }
-      else { res.end(JSON.stringify(err)); }
+      else { res.send(JSON.stringify(err)); }
     });
 };
