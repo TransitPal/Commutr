@@ -18,16 +18,19 @@ angular.module('app.services', [])
       });
     },
 
-    testDirections: function(currentLoc, renderer) {
+    testDirections: function(currentLoc, callback) {
       var directionsService = new google.maps.DirectionsService();
       var request = {
         origin: currentLoc,
         destination: new google.maps.LatLng(37.7683909618184, -122.51089453697205),
         travelMode: google.maps.TravelMode.DRIVING
       };
-      directionsService.route(request, function(directions, status) {
-        if (status === google.maps.DirectionsStatus.OK) {
-          renderer.setDirections(directions);
+      directionsService.route(request, function(response, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+          console.log('here');
+          console.log(response);
+          callback(response);
+          console.log('there');
         }
       });
     }

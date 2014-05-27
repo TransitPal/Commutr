@@ -1,4 +1,4 @@
-angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.notification'])
+angular.module('app', ['ionic', 'app.controllers', 'app.services'])
 
 .run(['$rootScope', '$ionicPlatform', function($rootScope, $ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -13,7 +13,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.notifica
     }
   });
 
-  $rootScope.localServerURL = 'http://localhost:8080/api/v1';
+  $rootScope.serverURL = 'http://localhost:8080/api/v1';
 }])
 
 .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {

@@ -27,10 +27,9 @@ angular.module('app.controllers', [])
       return false;
     });
 
-    ServerReq.testDirections(currentLoc, directionsRenderer);
-    // ServerReq.getReq($rootScope.localServerURL + '/routes')
+    // ServerReq.getReq($rootScope.serverURL + '/routes')
     // .then(function(data) {
-      // directionsRenderer.setDirections(data.route);
+      ServerReq.testDirections(currentLoc, directionsRenderer.setDirections);
       // do something with data.time
     // });
   }, function(err) {
@@ -38,16 +37,14 @@ angular.module('app.controllers', [])
   });
 }])
 
-.controller('SettingsCtrl', ['$rootScope', '$scope', 'ServerReq', 'Notify', function($rootScope, $scope, ServerReq, Notify) {
+.controller('SettingsCtrl', ['$rootScope', '$scope', 'ServerReq', function($rootScope, $scope, ServerReq) {
   $scope.postSettings = function(user){
+    user.name = 'nick wei';
+    user.email = 'nickwei@gmail.com';
     console.log('data sent to server: ', user);
-    var obj = window.plugin.notification.local;
-    ServerReq.postReq($rootScope.localServerURL + '/user', {user: user})
+    ServerReq.postReq($rootScope.serverURL + '/user', user)
     .then(function(data) {
-      alert('post data to server complete: ', data);
-      Notify.notify(new Date().getTime() + 10000, obj);
-      console.log('finished');
-
+      console.log('post data to server complete: ', data);
     });
   };
 }]);

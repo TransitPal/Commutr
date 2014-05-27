@@ -1,0 +1,11 @@
+2014-05-27 10:09:19.849 Commutr[17789:70b] Multi-tasking -> Device: YES, App: YES
+2014-05-27 10:09:19.884 Commutr[17789:70b] Unlimited access to network resources
+2014-05-27 10:09:19.887 Commutr[17789:70b] Fix applied for database locations?: YES
+2014-05-27 10:09:20.007 Commutr[17789:70b] CDVPlugin class IonicKeyboard (pluginName: keyboard) does not exist.
+2014-05-27 10:09:20.008 Commutr[17789:70b] [CDVTimer][keyboard] 0.530005ms
+2014-05-27 10:09:20.008 Commutr[17789:70b] CDVPlugin class CDVStatusBar (pluginName: statusbar) does not exist.
+2014-05-27 10:09:20.008 Commutr[17789:70b] [CDVTimer][statusbar] 0.406027ms
+2014-05-27 10:09:20.009 Commutr[17789:70b] [CDVTimer][TotalPluginStartup] 1.794040ms
+2014-05-27 10:09:20.169 Commutr[17789:70b] Resetting plugins due to page load.
+2014-05-27 10:09:20.704 Commutr[17789:70b] Finished load of: file:///Users/nwei/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/93B867C9-3AB1-4DAF-8E15-FB9F86D4A14F/Commutr.app/www/index.html#/tab/route
+2014-05-27 10:10:06.274 Commutr[17789:70b] Received memory warning.
