@@ -50,14 +50,13 @@ angular.module('app.controllers', [])
 
 }])
 
-.controller('SettingsCtrl', ['$rootScope', '$scope', 'ServerReq', function($rootScope, $scope, ServerReq) {
+.controller('SettingsCtrl', ['$rootScope', '$scope', 'ServerReq', 'Notify', function($rootScope, $scope, ServerReq, Notify) {
   $scope.postSettings = function(user){
-    user.name = 'nick wei';
-    user.email = 'nickwei@gmail.com';
     console.log('data sent to server: ', user);
     console.log('check: ', $rootScope.serverURL);
     ServerReq.postReq($rootScope.serverURL + '/user', user)
     .then(function(data) {
+      Notify.notify(data.time);
       console.log('post data to server complete: ', data);
     });
   };
