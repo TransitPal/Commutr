@@ -21,20 +21,27 @@ exports.saveUser = function(settings, res){
     }
   });
 
+  maps.getTransitTime(user.homeLocation, user.workLocation)
+  .then(function(transitTime) {
+    console.log(transitTime);
+    res.send(201, {time: transitTime});
+  });
+  
   user.save(function(err,user){
     if(err) return console.error(err);
     console.log('User settings saved', user);
   });
 
-  res.send(201);
+
 };
 
 exports.getRoutes = function(req, res) {
   maps.getDirections('37.7577,-122.4376', '37.783542,-122.408943')
-  .then(function(err, data) {
-      if (!err) { 
-        res.send(200, JSON.stringify(data)); 
-      }
-      else { res.send(JSON.stringify(err)); }
+  .then(function(data) {
+    maps.getTransitTime('37.7577,-122.4376', '37.783542,-122.408943')
+    .then(function(transitTime) {
+      console.log(transitTime);
+      res.send(200, {time: transitTime, route: data}); 
     });
+  });
 };
