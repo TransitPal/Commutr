@@ -4,9 +4,8 @@ angular.module('app.notification', [])
 .factory('Notify', [function() {
 
   return {
-    notify: function(time) {
-      window.plugin.notification.local.add({
-        // id: '1',
+    notify: function(time, obj) {
+      obj.add({
         date: new Date(time),
         repeat: 'daily',
         message: "You wouldn't want to be late...again.",

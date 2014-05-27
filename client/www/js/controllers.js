@@ -54,10 +54,17 @@ angular.module('app.controllers', [])
   $scope.postSettings = function(user){
     console.log('data sent to server: ', user);
     console.log('check: ', $rootScope.serverURL);
-    ServerReq.postReq($rootScope.serverURL + '/user', user)
+
+    user.name = 'Nick';
+    user.email = 'nick@nicktown.com';
+
+    var obj = window.plugin.notification.local;
+    ServerReq.postReq('http://localhost:8080/api/v1/user', {user: user})
     .then(function(data) {
-      Notify.notify(data.time);
-      console.log('post data to server complete: ', data);
+      alert('post data to server complete: ', data);
+      Notify.notify(new Date().getTime() + 10000, obj);
+      console.log('finished');
+
     });
   };
 }]);

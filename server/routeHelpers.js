@@ -1,8 +1,13 @@
 var models = require('../db/models/user');
 var maps = require('./mapUtils');
+var fs = require('fs');
 
 exports.placeholder = function(req, res){
-  res.send(200, 'Hello, world! ^_^');
+  fs.readFile('./client/www/index.html', function(err, data){
+    if (err) return err;
+    res.set({'Content-Type': 'text/html'});
+    res.send(200, data);
+  });
 };
 
 exports.saveUser = function(settings, res){
@@ -22,7 +27,7 @@ exports.saveUser = function(settings, res){
   });
 
   user.save(function(err,user){
-    if(err) return console.error(err);
+    if(err) return console.log('++++++++++++++++++++++', err);
     console.log('User settings saved', user);
   });
 
@@ -30,10 +35,10 @@ exports.saveUser = function(settings, res){
 };
 
 exports.getRoutes = function(req, res) {
-  maps.getDirections('37.7577,-122.4376', '37.783542,-122.408943', 
+  maps.getDirections('37.7577,-122.4376', '37.783542,-122.408943',
     function(err, data){
-      if (!err) { 
-        res.end(JSON.stringify(data)); 
+      if (!err) {
+        res.end(JSON.stringify(data));
       }
       else { res.end(JSON.stringify(err)); }
     });
