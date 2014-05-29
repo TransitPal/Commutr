@@ -1,4 +1,5 @@
 var models = require('../db/models/user');
+var db = require('../db/dbHelpers');
 var maps = require('./mapUtils');
 
 exports.placeholder = function(req, res){
@@ -36,12 +37,15 @@ exports.saveUser = function(settings, res){
 };
 
 exports.getRoutes = function(req, res) {
-  maps.getDirections('37.7577,-122.4376', '37.783542,-122.408943')
-  .then(function(data) {
-    maps.getTransitTime('37.7577,-122.4376', '37.783542,-122.408943')
+<<<<<<< HEAD
+  db.getUserLocations(req.query.email, function(userLocations){
+    maps.getDirections(userLocations.homeAddress, userLocations.workAddress)
+    .then(function(data) {
+      maps.getTransitTime(userLocations.homeAddress, userLocations.workAddress);
+    })
     .then(function(transitTime) {
       console.log(transitTime);
       res.send(200, {time: transitTime, route: data}); 
     });
-  });
+  }
 };
