@@ -1,9 +1,14 @@
 var models = require('../db/models/user');
 var db = require('../db/dbHelpers');
 var maps = require('./mapUtils');
+var fs = require('fs');
 
 exports.placeholder = function(req, res){
-  res.send(200, 'Hello, world! ^_^');
+  fs.readFile('./client/www/index.html', function(err, data){
+    if (err) return err;
+    res.set({'Content-Type': 'text/html'});
+    res.send(200, data);
+  });
 };
 
 exports.saveUser = function(settings, res){
@@ -29,7 +34,7 @@ exports.saveUser = function(settings, res){
   });
   
   user.save(function(err,user){
-    if(err) return console.error(err);
+    if(err) return console.log('++++++++++++++++++++++', err);
     console.log('User settings saved', user);
   });
 
@@ -37,7 +42,6 @@ exports.saveUser = function(settings, res){
 };
 
 exports.getRoutes = function(req, res) {
-<<<<<<< HEAD
   db.getUserLocations(req.query.email, function(userLocations){
     maps.getDirections(userLocations.homeAddress, userLocations.workAddress)
     .then(function(data) {
