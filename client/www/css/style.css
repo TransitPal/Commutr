@@ -6,3 +6,7 @@
 .scroll {
   height: 100%;
 }
+
+.center-me {
+  text-align: center;
+}

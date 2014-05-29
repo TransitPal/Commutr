@@ -1,7 +1,5 @@
 <ion-view title="Settings">
-  <ion-content class="has-header padding">
-    <h4>Enter Your Information</h4>
-
+  <ion-content class="has-header padding" scroll="false">
     <label class="item item-input">
       <span class="input-label">Home Address</span>
       <input ng-model="user.homeAddress" type="text">
@@ -19,10 +17,11 @@
       <input ng-model="user.homeTime" type="number">
     </label>
 
-    <ion-footer-bar class="bar-dark">
+    <br>
+    <div class="center-me">
       <button class="button" ng-click="postSettings(user)">
         <i class="icon ion-compose"></i>
       </button>
-    </ion-footer-bar>
+    </div>
   </ion-content>
 </ion-view>

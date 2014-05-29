@@ -1,6 +1,22 @@
 angular.module('app.controllers', [])
 
-.controller('RouteCtrl', ['$scope', 'CustomPromises', 'ServerReq', '$ionicLoading', function($scope, CustomPromises, ServerReq, $ionicLoading) {
+.controller('TrackCtrl', ['$rootScope', '$scope', 'ServerReq', 'CustomPromises', function($rootScope, $scope, ServerReq, CustomPromises) {
+  $scope.trackMe = function() {
+    CustomPromises.p_geoloc()
+    .then(function(location) {
+      return ServerReq.postReq($rootScope.localServerURL + '/track', {location: location});
+    })
+    .then(function(data) {
+      console.log('tracking location: ', data);
+    });
+  };
+
+  $scope.continuousTrack = function(delay) {
+    setInterval($scope.trackMe, delay);
+  };
+}])
+
+.controller('RouteCtrl', ['$rootScope', '$scope', 'ServerReq', 'CustomPromises', '$ionicLoading', function($rootScope, $scope, ServerReq, CustomPromises, $ionicLoading) {
   // $scope.loading = $ionicLoading.show({
   //   content: 'Getting current location...',
   //   showBackdrop: false
@@ -9,8 +25,8 @@ angular.module('app.controllers', [])
   var directionsRenderer = new google.maps.DirectionsRenderer();
 
   CustomPromises.p_geoloc()
-  .then(function(position) {
-    var currentLoc = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+  .then(function(location) {
+    var currentLoc = new google.maps.LatLng(location.coords.latitude, location.coords.longitude);
 
     mapOptions = {
       center: currentLoc,

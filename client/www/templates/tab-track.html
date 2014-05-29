@@ -1,0 +1,15 @@
+<ion-view title="Track Me">
+  <ion-content class="has-header padding" scroll="false">
+    <label class="item item-input">
+      <span class="input-label">Tracking Delay</span>
+      <input ng-model="delay" type="number">
+    </label>
+
+    <br>
+    <div class="center-me">
+      <button class="button" ng-click="continousTrack(delay)">
+        <i class="icon ion-android-earth"></i>
+      </button>
+    </div>
+  </ion-content>
+</ion-view>

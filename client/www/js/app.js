@@ -25,6 +25,16 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.notifica
     templateUrl: "templates/tabs.html"
   })
 
+  .state('tab.track', {
+    url: '/track',
+    views: {
+      'tab-track': {
+        templateUrl: 'templates/tab-track.html',
+        controller: 'TrackCtrl'
+      }
+    }
+  })
+
   .state('tab.route', {
     url: '/route',
     views: {
@@ -45,5 +55,5 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.notifica
     }
   })
 
-  $urlRouterProvider.otherwise('/tab/route');
+  $urlRouterProvider.otherwise('/tab/track');
 }]);
