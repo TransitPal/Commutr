@@ -44,14 +44,18 @@ exports.saveUser = function(settings, res){
 };
 
 exports.getRoutes = function(req, res) {
-  db.getUserLocations(req.query.email, function(userLocations){
+  db.getUserLocations(req.query.email)
+    .then(function(userLocations){
     maps.getDirections(userLocations.homeAddress, userLocations.workAddress)
+    })
     .then(function(data) {
       maps.getTransitTime(userLocations.homeAddress, userLocations.workAddress);
+    }, function(err){
+      res.send(500, err);
     })
     .then(function(transitTime) {
-      console.log(transitTime);
       res.send(200, {time: transitTime, route: data}); 
-    });
-  });
+    },function(err){
+      res.send(500, err);
+    })
 };

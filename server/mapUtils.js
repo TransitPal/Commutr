@@ -13,7 +13,6 @@ var getDirections = function(startLoc, endLoc) {
 var getTransitTime = function(startLoc, endLoc) {
   return getDirections(startLoc, endLoc)
          .then(function(data) {
-            console.log('data',data);
             var transitTime = 0;
             var routeLegs = data.routes[0].legs;
             for (var i = 0; i < routeLegs.length; i++) {

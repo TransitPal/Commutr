@@ -13,12 +13,18 @@ describe('Server', function(){
       name: 'Nick',
       email: 'nicksemail@gmail.com',
       homeAddress: 'San Francisco',
+      homeLocation: {lat: 37.783542, lng: -122.408943},
       workAddress: '944 Market St, San Francisco',
+      workLocation: {lat: 37.7746071, lng: -122.4260718},
       workTime: 9,
       homeTime: 2
     }
   };
   user = url.format(user);
+
+  beforeEach(function(){
+    console.log('\n\n\n\n\n');
+  })
 
   it('should return a 200 status on get request to /', function(done){
     request(app)
@@ -29,7 +35,7 @@ describe('Server', function(){
 
   it('should return a 201 status on a post request to /api/v1/user', function(done){
     request(app)
-      .post('/api/v1/user?' + user)
+      .post('/api/v1/user' + user)
       .expect(201)
       .end(function(){
         User.findOneAndRemove({email: "nicksemail@gmail.com"}).exec()
@@ -39,7 +45,8 @@ describe('Server', function(){
 
   it('should return a 200 status and route object on a get request to /api/v1/routes', function(done){
     request(app)
-      .post('/api/v1/user?' + user);
+      .post('/api/v1/user' + user)
+      .end();
     request(app)
       .get('/api/v1/routes?email=nicksemail@gmail.com')
       .expect(200)
@@ -54,7 +61,8 @@ describe('Server', function(){
 
   it('should return a directions object on a get request to /api/v1/routes with an email parameter specified', function(done){
     request(app)
-      .post('/api/v1/user?' + user);
+      .post('/api/v1/user' + user)
+      .end();
     request(app)
       .get('/api/v1/routes?email=nicksemail@gmail.com')
       .expect(function(res) {
