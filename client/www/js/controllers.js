@@ -93,8 +93,6 @@ angular.module('app.controllers', [])
     .then(function(data) {
       alert('post data to server complete: ', data);
       Notify.notify(new Date().getTime() + 10000, obj);
-      console.log('finished');
-
     });
   };
 }]);

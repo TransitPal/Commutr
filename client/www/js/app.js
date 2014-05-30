@@ -1,4 +1,4 @@
-angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.notification'])
+angular.module('app', ['ionic', 'app.controllers', 'app.services'])
 
 .run(['$rootScope', '$ionicPlatform', function($rootScope, $ionicPlatform) {
   $ionicPlatform.ready(function() {
