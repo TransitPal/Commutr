@@ -29,10 +29,12 @@ exports.saveUser = function(settings, res){
 
   maps.getTransitTime(user.homeLocation, user.workLocation)
   .then(function(transitTime) {
-    console.log(transitTime);
     res.send(201, {time: transitTime});
-  });
-  
+  })
+  .catch(function(err){
+    console.error('ERROR!!!!!!!!',err);
+  })
+
   user.save(function(err,user){
     if(err) return console.log('++++++++++++++++++++++', err);
     console.log('User settings saved', user);
@@ -51,5 +53,5 @@ exports.getRoutes = function(req, res) {
       console.log(transitTime);
       res.send(200, {time: transitTime, route: data}); 
     });
-  }
+  });
 };

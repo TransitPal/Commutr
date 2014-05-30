@@ -10,8 +10,7 @@ app.get('/api/v1/routes', helpers.getRoutes);
 
 app.post('/api/v1/user', function(req, res){
   console.log('executing /user');
-  console.log(req.body);
-  helpers.saveUser(req.body.user, res);
+  helpers.saveUser(req.query, res);
 });
 
 module.exports = app;
