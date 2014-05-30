@@ -9,3 +9,31 @@
 2014-05-27 10:09:20.169 Commutr[17789:70b] Resetting plugins due to page load.
 2014-05-27 10:09:20.704 Commutr[17789:70b] Finished load of: file:///Users/nwei/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/93B867C9-3AB1-4DAF-8E15-FB9F86D4A14F/Commutr.app/www/index.html#/tab/route
 2014-05-27 10:10:06.274 Commutr[17789:70b] Received memory warning.
+2014-05-29 19:41:57.160 Commutr[47564:70b] Multi-tasking -> Device: YES, App: YES
+2014-05-29 19:41:57.252 Commutr[47564:70b] Unlimited access to network resources
+2014-05-29 19:41:57.449 Commutr[47564:70b] CDVPlugin class IonicKeyboard (pluginName: keyboard) does not exist.
+2014-05-29 19:41:57.449 Commutr[47564:70b] [CDVTimer][keyboard] 0.508964ms
+2014-05-29 19:41:57.450 Commutr[47564:70b] CDVPlugin class CDVStatusBar (pluginName: statusbar) does not exist.
+2014-05-29 19:41:57.450 Commutr[47564:70b] [CDVTimer][statusbar] 0.425994ms
+2014-05-29 19:41:57.451 Commutr[47564:70b] [CDVTimer][TotalPluginStartup] 1.885951ms
+2014-05-29 19:41:57.653 Commutr[47564:70b] Resetting plugins due to page load.
+2014-05-29 19:41:58.281 Commutr[47564:70b] Finished load of: file:///Users/nwei/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/93B867C9-3AB1-4DAF-8E15-FB9F86D4A14F/Commutr.app/www/index.html#/login
+2014-05-29 19:43:37.926 Commutr[47564:70b] Resetting plugins due to page load.
+2014-05-29 19:43:39.154 Commutr[47564:70b] Finished load of: https://accounts.google.com/o/oauth2/auth?client_id=243623987042-dapbf3elid1t5bl1tcpidf7t2qrsqf3a.apps.googleusercontent.com&redirect_uri=postmessage&response_type=code%20token%20id_token%20gsession&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fplus.login&access_type=offline&cookie_policy=single_host_origin&include_granted_scopes=true&proxy=oauth2relay611563167&origin=file%3A%2F%2F&state=523129994%7C0.2911456802&
+2014-05-29 19:43:59.852 Commutr[47564:70b] CDVWebViewDelegate: Navigation started when state=1
+2014-05-29 19:43:59.853 Commutr[47564:70b] Failed to load webpage with error: CDVWebViewDelegate: Navigation started when state=1
+2014-05-29 19:43:59.853 Commutr[47564:70b] Resetting plugins due to page load.
+2014-05-29 19:44:01.614 Commutr[47564:70b] Finished load of: https://developers.google.com/accounts/docs/OAuth2?csw=1
+Terminating in response to SpringBoard's termination.
+2014-05-29 20:41:20.187 Commutr[48043:70b] Multi-tasking -> Device: YES, App: YES
+2014-05-29 20:41:20.215 Commutr[48043:70b] Unlimited access to network resources
+2014-05-29 20:41:20.254 Commutr[48043:70b] CDVPlugin class IonicKeyboard (pluginName: keyboard) does not exist.
+2014-05-29 20:41:20.254 Commutr[48043:70b] [CDVTimer][keyboard] 0.563025ms
+2014-05-29 20:41:20.255 Commutr[48043:70b] CDVPlugin class CDVStatusBar (pluginName: statusbar) does not exist.
+2014-05-29 20:41:20.255 Commutr[48043:70b] [CDVTimer][statusbar] 0.600994ms
+2014-05-29 20:41:20.256 Commutr[48043:70b] [CDVTimer][TotalPluginStartup] 2.106011ms
+2014-05-29 20:41:20.388 Commutr[48043:70b] Resetting plugins due to page load.
+2014-05-29 20:41:21.058 Commutr[48043:70b] Finished load of: file:///Users/nwei/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/93B867C9-3AB1-4DAF-8E15-FB9F86D4A14F/Commutr.app/www/index.html#/login
+2014-05-29 20:43:12.793 Commutr[48043:70b] Resetting plugins due to page load.
+2014-05-29 20:43:13.076 Commutr[48043:70b] Finished load of: https://accounts.google.com/o/oauth2/auth?client_id=243623987042-20jcc57di4ol4u36jr3cvidv66h0h6mi.apps.googleusercontent.com&redirect_uri=postmessage&response_type=code%20token%20id_token%20gsession&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fplus.login&access_type=offline&cookie_policy=single_host_origin&include_granted_scopes=true&proxy=oauth2relay720991430&origin=file%3A%2F%2F&state=1880380646%7C0.4151006868&
+Terminating in response to SpringBoard's termination.

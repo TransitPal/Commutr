@@ -1,0 +1,20 @@
+<ion-view title="Login">
+  <ion-content class="has-header padding" scroll="false">
+    <div class="center-me">
+      <button class="button button-block" ng-click="logIn()">Login</button>
+    </div>
+
+    <div id="signinButton">
+      <span class="g-signin"
+        data-scope="https://www.googleapis.com/auth/plus.login"
+        data-clientid="243623987042-mbus40njhn4qrr40h3omns06drltm9nc.apps.googleusercontent.com"
+        data-redirecturi="postmessage"
+        data-accesstype="offline"
+        data-cookiepolicy="single_host_origin"
+        data-callback="logIn">
+      </span>
+    </div>
+    <div id="result"></div>
+
+  </ion-content>
+</ion-view>

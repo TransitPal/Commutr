@@ -13,16 +13,33 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services'])
     }
   });
 
-  $rootScope.serverURL = 'http://localhost:8080/api/v1';
+  // Customizations
+  $rootScope.localServerURL = 'http://localhost:8080/api/v1';
 }])
 
 .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
   $stateProvider
 
+  .state('login', {
+    url: "/login",
+    templateUrl: "templates/login.html",
+    controller: 'LoginCtrl'
+  })
+
   .state('tab', {
     url: "/tab",
     abstract: true,
     templateUrl: "templates/tabs.html"
+  })
+
+  .state('tab.track', {
+    url: '/track',
+    views: {
+      'tab-track': {
+        templateUrl: 'templates/tab-track.html',
+        controller: 'TrackCtrl'
+      }
+    }
   })
 
   .state('tab.route', {
@@ -45,5 +62,5 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services'])
     }
   })
 
-  $urlRouterProvider.otherwise('/tab/route');
+  $urlRouterProvider.otherwise('/login');
 }]);

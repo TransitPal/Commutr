@@ -1,6 +1,56 @@
 angular.module('app.controllers', [])
 
-.controller('RouteCtrl', ['$scope', 'CustomPromises', 'ServerReq', '$ionicLoading', function($scope, CustomPromises, ServerReq, $ionicLoading) {
+.controller('LoginCtrl', ['$scope', '$state', '$window', function($scope, $state, $window) {
+  $window.logIn = function(authResult) {
+    if (authResult['code']) {
+      console.log('authResult: ', authResult);
+      // Hide the sign-in button now that the user is authorized, for example:
+      //$('#signinButton').attr('style', 'display: none');
+
+      // Send the code to the server
+      // $.ajax({
+      //   type: 'POST',
+      //   url: 'plus.php?storeToken',
+      //   contentType: 'application/octet-stream; charset=utf-8',
+      //   success: function(result) {
+      //     // Handle or verify the server response if necessary.
+
+      //     // Prints the list of people that the user has allowed the app to know
+      //     // to the console.
+      //     console.log(result);
+      //     if (result['profile'] && result['people']){
+      //       $('#results').html('Hello ' + result['profile']['displayName'] + '. You successfully made a server side call to people.get and people.list');
+      //     } else {
+      //       $('#results').html('Failed to make a server-side call. Check your configuration and console.');
+      //     }
+      //   },
+      //   processData: false,
+      //   data: authResult['code']
+      // });
+      // $state.go('tab.track');
+    } else if (authResult['error']) {
+      console.log('error: ', authResult);
+    }
+  };
+}])
+
+.controller('TrackCtrl', ['$rootScope', '$scope', 'ServerReq', 'CustomPromises', function($rootScope, $scope, ServerReq, CustomPromises) {
+  $scope.trackMe = function() {
+    CustomPromises.p_geoloc()
+    .then(function(location) {
+      return ServerReq.postReq($rootScope.localServerURL + '/track', {location: location});
+    })
+    .then(function(data) {
+      console.log('tracking location: ', data);
+    });
+  };
+
+  $scope.continuousTrack = function(delay) {
+    setInterval($scope.trackMe, delay);
+  };
+}])
+
+.controller('RouteCtrl', ['$rootScope', '$scope', 'ServerReq', 'CustomPromises', '$ionicLoading', function($rootScope, $scope, ServerReq, CustomPromises, $ionicLoading) {
   // $scope.loading = $ionicLoading.show({
   //   content: 'Getting current location...',
   //   showBackdrop: false
@@ -9,8 +59,8 @@ angular.module('app.controllers', [])
   var directionsRenderer = new google.maps.DirectionsRenderer();
 
   CustomPromises.p_geoloc()
-  .then(function(position) {
-    var currentLoc = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+  .then(function(location) {
+    var currentLoc = new google.maps.LatLng(location.coords.latitude, location.coords.longitude);
 
     mapOptions = {
       center: currentLoc,
@@ -27,9 +77,10 @@ angular.module('app.controllers', [])
       return false;
     });
 
-    // ServerReq.getReq($rootScope.serverURL + '/routes')
+    ServerReq.testDirections(currentLoc, directionsRenderer);
+    // ServerReq.getReq($rootScope.localServerURL + '/routes')
     // .then(function(data) {
-      ServerReq.testDirections(currentLoc, directionsRenderer.setDirections);
+      // directionsRenderer.setDirections(data.route);
       // do something with data.time
     // });
   }, function(err) {
@@ -42,7 +93,7 @@ angular.module('app.controllers', [])
     user.name = 'nick wei';
     user.email = 'nickwei@gmail.com';
     console.log('data sent to server: ', user);
-    ServerReq.postReq($rootScope.serverURL + '/user', user)
+    ServerReq.postReq($rootScope.localServerURL + '/user', user)
     .then(function(data) {
       console.log('post data to server complete: ', data);
     });

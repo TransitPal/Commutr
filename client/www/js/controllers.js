@@ -1,5 +1,36 @@
 angular.module('app.controllers', [])
 
+.controller('LoginCtrl', ['$scope', '$state', '$window', function($scope, $state, $window) {
+  $window.logIn = function(authResult) {
+    if (authResult['code']) {
+      console.log('success: ', authResult);
+      // Send the code to the server
+      // $.ajax({
+      //   type: 'POST',
+      //   url: 'plus.php?storeToken',
+      //   contentType: 'application/octet-stream; charset=utf-8',
+      //   success: function(result) {
+      //     // Handle or verify the server response if necessary.
+
+      //     // Prints the list of people that the user has allowed the app to know
+      //     // to the console.
+      //     console.log(result);
+      //     if (result['profile'] && result['people']){
+      //       $('#results').html('Hello ' + result['profile']['displayName'] + '. You successfully made a server side call to people.get and people.list');
+      //     } else {
+      //       $('#results').html('Failed to make a server-side call. Check your configuration and console.');
+      //     }
+      //   },
+      //   processData: false,
+      //   data: authResult['code']
+      // });
+      $state.go('tab.track');
+    } else if (authResult['error']) {
+      console.log('error: ', authResult);
+    }
+  };
+}])
+
 .controller('TrackCtrl', ['$rootScope', '$scope', 'ServerReq', 'CustomPromises', function($rootScope, $scope, ServerReq, CustomPromises) {
   $scope.trackMe = function() {
     CustomPromises.p_geoloc()

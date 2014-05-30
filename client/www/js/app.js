@@ -13,11 +13,18 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.notifica
     }
   });
 
+  // Customizations
   $rootScope.localServerURL = 'http://localhost:8080/api/v1';
 }])
 
 .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
   $stateProvider
+
+  .state('login', {
+    url: "/login",
+    templateUrl: "templates/login.html",
+    controller: 'LoginCtrl'
+  })
 
   .state('tab', {
     url: "/tab",
@@ -55,5 +62,5 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.notifica
     }
   })
 
-  $urlRouterProvider.otherwise('/tab/track');
+  $urlRouterProvider.otherwise('/login');
 }]);
