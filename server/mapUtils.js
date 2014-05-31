@@ -10,16 +10,13 @@ var getDirections = function(startLoc, endLoc) {
   return directions(queryStart, queryEnd);
 };
 
-var getTransitTime = function(startLoc, endLoc) {
-  return getDirections(startLoc, endLoc)
-         .then(function(data) {
-            var transitTime = 0;
-            var routeLegs = data.routes[0].legs;
-            for (var i = 0; i < routeLegs.length; i++) {
-              transitTime += routeLegs[i].duration.value;
-            }
-           return transitTime;
-         });
+var getTransitTime = function(route) {
+  var transitTime = 0;
+  var routeLegs = route.routes[0].legs;
+  for (var i = 0; i < routeLegs.length; i++) {
+    transitTime += routeLegs[i].duration.value;
+  }
+  return transitTime;
 };
 
 module.exports = {
