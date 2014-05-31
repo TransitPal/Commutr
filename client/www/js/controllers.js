@@ -1,33 +1,53 @@
 angular.module('app.controllers', [])
 
-.controller('LoginCtrl', ['$scope', '$state', '$window', function($scope, $state, $window) {
-  $window.logIn = function(authResult) {
-    if (authResult['code']) {
-      console.log('success: ', authResult);
-      // Send the code to the server
-      // $.ajax({
-      //   type: 'POST',
-      //   url: 'plus.php?storeToken',
-      //   contentType: 'application/octet-stream; charset=utf-8',
-      //   success: function(result) {
-      //     // Handle or verify the server response if necessary.
+.controller('LoginCtrl', ['$scope', '$state','$q', function($scope, $state, $q) {
+  var p_auth = function(authOptions) {
+    var deferred = $q.defer();
 
-      //     // Prints the list of people that the user has allowed the app to know
-      //     // to the console.
-      //     console.log(result);
-      //     if (result['profile'] && result['people']){
-      //       $('#results').html('Hello ' + result['profile']['displayName'] + '. You successfully made a server side call to people.get and people.list');
-      //     } else {
-      //       $('#results').html('Failed to make a server-side call. Check your configuration and console.');
-      //     }
-      //   },
-      //   processData: false,
-      //   data: authResult['code']
-      // });
-      $state.go('tab.track');
-    } else if (authResult['error']) {
-      console.log('error: ', authResult);
-    }
+    var authUrl = 'https://accounts.google.com/o/oauth2/auth?' +
+      "client_id=" + authOptions.client_id + "&" +
+      "redirect_uri=" + authOptions.redirect_uri + "&" +
+      "response_type=code&" + 
+      "scope=" + authOptions.scope;
+
+    var authWindow = window.open(authUrl, '_blank', 'location=no,toolbar=no');
+
+    $(authWindow).on('loadstart', function(event) {
+      console.log('event: ', event);
+      var url = event.originalEvent.url;
+      var code = /\?code=(.+)$/.exec(url);
+      var error = /\?error=(.+)$/.exec(url);
+
+      if (code || error) {
+        authWindow.close();
+      }
+      if (code) {
+        deferred.resolve(code);
+      } else if (error) {
+        deferred.reject(error);
+      }
+    });
+
+    return deferred.promise;
+  };
+
+  $scope.auth = function() {
+    p_auth({
+      client_id: '243623987042-ibvoulim8vu4ftgdmpra8son00jgbrj6.apps.googleusercontent.com',
+      client_secret: 'secret',
+      redirect_uri: 'http://localhost',
+      scope: 'https://www.googleapis.com/auth/plus.login'
+    })
+    .then(function(data) {
+      console.log('Access Token: ', data);
+      /*ServerReq.postReq('/auth', {code: data[0]})
+      .then(function(data) {
+        console.log('sucessful post, server response: ', data);
+        $state.go('tab.track');
+      });*/
+    }, function(err) {
+      console.log('error: ', err);
+    });
   };
 }])
 

@@ -63,3 +63,17 @@ gulp.task('emulateAndroid',function(){
       'cd client && ionic platform android && ionic build android && ionic emulate android'
     ]));
 });
+
+gulp.task('runAnd',function(){
+  return gulp.src(paths.client)
+    .pipe(shell([
+      'cd client && ionic run android'
+    ]));
+});
+
+gulp.task('runIos',function(){
+  return gulp.src(paths.client)
+    .pipe(shell([
+      'cd client && ionic build ios && ionic emulate ios'
+    ]));
+});

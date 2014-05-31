@@ -15,6 +15,14 @@
     -->
     <preference name="BackupWebStorage" value="none" />
 
+    <plugin name="InAppBrowser" value="org.apache.cordova.InAppBrowser" />
+    <plugin name="Device" value="org.apache.cordova.device" />
+    <feature name="InAppBrowser">
+        <param name="android-package" value="org.apache.cordova.inappbrowser.InAppBrowser" />
+    </feature>
+    <feature name="InAppBrowser">
+        <param name="ios-package" value="CDVInAppBrowser" />
+    </feature>
     <!-- <plugin value="de.appplant.cordova.plugin.local-notification" /> -->
     <!-- <plugin value="org.apache.cordova.device" /> -->
     <feature name="StatusBar">
