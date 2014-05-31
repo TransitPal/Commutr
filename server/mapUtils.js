@@ -7,6 +7,7 @@ var directions = Q.denodeify(gm.directions);
 var getDirections = function(startLoc, endLoc) {
   var queryStart = startLoc.lat + ',' + startLoc.lng;
   var queryEnd = endLoc.lat + ',' + endLoc.lng;
+  // returns promise
   return directions(queryStart, queryEnd);
 };
 
