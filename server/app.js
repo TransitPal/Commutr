@@ -14,6 +14,7 @@ app.get('/api/v1/routes', helpers.getRoutes);
 // Refactor complete
 app.post('/api/v1/user', helpers.saveUser);
 
+// Complete
 app.delete('/api/v1/user/:userId', helpers.deleteUser);
 
 module.exports = app;
