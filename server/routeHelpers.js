@@ -27,13 +27,13 @@ exports.saveUser = function(settings, res){
     }
   });
 
-  maps.getTransitTime(user.homeLocation, user.workLocation)
-  .then(function(transitTime) {
-    res.send(201, {time: transitTime});
+  maps.getDirections(user.homeLocation, user.workLocation)
+  .then(function(route) {
+    res.send(201, {time: maps.getTransitTime(route)});
   })
   .catch(function(err){
     console.error('ERROR!!!!!!!!',err);
-  })
+  });
 
   user.save(function(err,user){
     if(err) return console.log('++++++++++++++++++++++', err);
@@ -45,17 +45,19 @@ exports.saveUser = function(settings, res){
 
 exports.getRoutes = function(req, res) {
   db.getUserLocations(req.query.email)
-    .then(function(userLocations){
-    maps.getDirections(userLocations.homeAddress, userLocations.workAddress)
+  .then(function(userLocations){
+    if (!userLocations) { 
+      console.log('User not found');
+      res.send(400); 
+    }
+    maps.getDirections(userLocations.homeLocation, userLocations.workLocation)
+    .then (function(route) {
+      res.send(200, {time: maps.getTransitTime(route), route: route});
     })
-    .then(function(data) {
-      maps.getTransitTime(userLocations.homeAddress, userLocations.workAddress);
-    }, function(err){
+    .catch(function(err) {
       res.send(500, err);
-    })
-    .then(function(transitTime) {
-      res.send(200, {time: transitTime, route: data}); 
-    },function(err){
-      res.send(500, err);
-    })
+    });
+  }, function(err) {
+    res.send(500, err);
+  });
 };
