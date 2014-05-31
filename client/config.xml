@@ -15,20 +15,34 @@
     -->
     <preference name="BackupWebStorage" value="none" />
 
+
+    <!-- These have been tested on Android -->
+    <plugin name="Geolocation" value="org.apache.cordova.GeoBroker" />
+    <!-- <feature name="Geolocation">
+        <param name="android-package" value="org.apache.cordova.GeoBroker" />
+    </feature>
+    <feature name="Geolocation">
+        <param name="ios-package" value="CDVLocation" />
+    </feature> -->
+
     <plugin name="InAppBrowser" value="org.apache.cordova.InAppBrowser" />
-    <plugin name="Device" value="org.apache.cordova.device" />
-    <feature name="InAppBrowser">
-        <param name="android-package" value="org.apache.cordova.inappbrowser.InAppBrowser" />
+    <!-- <feature name="InAppBrowser">
+        <param name="android-package" value="org.apache.cordova.InAppBrowser" />
     </feature>
     <feature name="InAppBrowser">
         <param name="ios-package" value="CDVInAppBrowser" />
-    </feature>
-    <!-- <plugin value="de.appplant.cordova.plugin.local-notification" /> -->
-    <!-- <plugin value="org.apache.cordova.device" /> -->
-    <feature name="StatusBar">
-      <param name="ios-package" value="CDVStatusBar" onload="true" />
-    </feature>
-    <feature name="Geolocation">
-      <param name="ios-package" value="CDVLocation" />
     </feature> -->
+
+
+    <!-- These have not been tested on Android -->
+    <plugin name="Device" value="org.apache.cordova.Device" />
+    <!-- <feature name="Device">
+        <param name="android-package" value="org.apache.cordova.Device" />
+    </feature> -->
+
+    <feature name="StatusBar">
+        <param name="ios-package" value="CDVStatusBar" onload="true" />
+    </feature>
+
+    <plugin name="LocalNotification" value="de.appplant.cordova.plugin.local-notification" />
 </widget>

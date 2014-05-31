@@ -40,11 +40,16 @@ angular.module('app.controllers', [])
     })
     .then(function(data) {
       console.log('Access Token: ', data);
-      /*ServerReq.postReq('/auth', {code: data[0]})
-      .then(function(data) {
-        console.log('sucessful post, server response: ', data);
-        $state.go('tab.track');
-      });*/
+      // ServerReq.postReq('/auth', {code: data[1]})
+      // .then(function(data) {
+      //   console.log('sucessful post, server response: ', data);
+      //   $state.go('tab.track');
+      // })
+      // .catch(function(err) {
+      //   console.log('error: ', err);
+      //   $state.go('tab.track');
+      // });
+      $state.go('tab.track');
     }, function(err) {
       console.log('error: ', err);
     });
@@ -55,11 +60,16 @@ angular.module('app.controllers', [])
   $scope.trackMe = function() {
     CustomPromises.p_geoloc()
     .then(function(location) {
-      return ServerReq.postReq($rootScope.localServerURL + '/track', {location: location});
-    })
-    .then(function(data) {
-      console.log('tracking location: ', data);
+      console.log('location: ', location);
+      // return ServerReq.postReq($rootScope.localServerURL + '/track', {location: location});
+    }, function(err) {
+      console.log('error: ', err);
     });
+    // .then(function(data) {
+    //   console.log('tracking location: ', data);
+    // }, function(err) {
+    //   console.log('error: ', err);
+    // });
   };
 
   $scope.continuousTrack = function(delay) {
@@ -97,9 +107,13 @@ angular.module('app.controllers', [])
     ServerReq.testDirections(currentLoc, directionsRenderer);
     // ServerReq.getReq($rootScope.localServerURL + '/routes')
     // .then(function(data) {
-      // directionsRenderer.setDirections(data.route);
-      // do something with data.time
+    //   directionsRenderer.setDirections(data.route);
+    //   do something with data.time
+    // })
+    // .catch(function(err) {
+    //   console.log('error: ', err);
     // });
+
   }, function(err) {
     console.log('error: ', err);
   });
@@ -113,6 +127,9 @@ angular.module('app.controllers', [])
     .then(function(data) {
       alert('post data to server complete: ', data);
       // Notify.notify(new Date().getTime() + 10000, obj);
+    })
+    .catch(function(err) {
+      console.log('error: ', err);
     });
   };
 }]);
