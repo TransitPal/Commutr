@@ -92,7 +92,7 @@ angular.module('app.controllers', [])
     ServerReq.postReq($rootScope.localServerURL + '/user', {user: user})
     .then(function(data) {
       alert('post data to server complete: ', data);
-      Notify.notify(new Date().getTime() + 10000, obj);
+      // Notify.notify(new Date().getTime() + 10000, obj);
     });
   };
 }]);
