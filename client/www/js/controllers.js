@@ -104,7 +104,11 @@ angular.module('app.controllers', [])
       return false;
     });
 
-    ServerReq.testDirections(currentLoc, directionsRenderer);
+    if ($rootScope.newDirections) {
+      directionsRenderer.setDirections($rootScope.newDirections);
+    } else {
+      ServerReq.testDirections(currentLoc, directionsRenderer);
+    }
     // ServerReq.getReq($rootScope.localServerURL + '/routes')
     // .then(function(data) {
     //   directionsRenderer.setDirections(data.route);
@@ -120,13 +124,55 @@ angular.module('app.controllers', [])
 }])
 
 .controller('SettingsCtrl', ['$rootScope', '$scope', 'ServerReq', 'Notify', function($rootScope, $scope, ServerReq, Notify) {
+
+  var p_timeout = function(time) {
+    var diffTime = Number(time) - Number(new Date());
+    var deferred = $q.defer();
+
+    setTimeout(function() {
+      ServerReq.getReq($rootScope.localServerURL + '/route')
+      .then(function(data) {
+        deferred.resolve(data);
+      })
+      .catch(function(err) {
+        deferred.reject(err);
+      });
+    }, diffTime);
+
+    return deferred.promise;
+  };
+
+  // test functioncality code
+  var directionsService = new google.maps.DirectionsService();
+  var request = {
+    origin: new google.maps.LatLng(37.4683909618184, -122.21089453697205),
+    destination: new google.maps.LatLng(37.7683909618184, -122.51089453697205),
+    travelMode: google.maps.TravelMode.DRIVING
+  };
+  directionsService.route(request, function(directions, status) {
+    if (status === google.maps.DirectionsStatus.OK) {
+      $rootScope.newDirections = directions;
+      console.log($rootScope.newDirections);
+    }
+  });
+
+  var obj = window.plugin.notification.local;
+
   $scope.postSettings = function(user){
-    console.log('data sent to server: ', user);
-    var obj = window.plugin.notification.local;
+    // var obj = window.plugin.notification.local;
+    // console.log('data sent to server: ', user);
+    user.email = 'nicksemail@gmail.com';
     ServerReq.postReq($rootScope.localServerURL + '/user', {user: user})
     .then(function(data) {
-      alert('post data to server complete: ', data);
-      // Notify.notify(new Date().getTime() + 10000, obj);
+      // use settimeout to invoke another get request to routes at the time returned by the server
+      return p_timeout(data.time);
+    })
+    .then(function(data) {
+      // parse out duration from the google maps directions object
+        // notify the user 10 minutes before he/she needs to leave
+      // render the directions object on the map
+      Notify.notify(new Date(data.route.routes.duration.value + 600000), obj);
+      $rootScope.newDirections = data.route;
     })
     .catch(function(err) {
       console.log('error: ', err);
