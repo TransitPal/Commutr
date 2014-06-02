@@ -42,55 +42,74 @@ exports.getRoutes = function(req, res) {
 exports.saveUser = function(req, res){
   var settings = req.body;
   var email = settings.email;
-  User.findOne({email:email}).exec()
-    .then(function(user){
-      if(user){
-        // Update user
-        for (var option in settings) {
-          if(option === 'homeTime' || option === 'workTime'){
-            user['routine'][option] = settings[option];
-          } else {
-            user[option] = settings[option];
-          }
+  
+  db.getUser(email)
+  .then(function(user){
+    if(user){
+      // Update user
+      for (var option in settings) {
+        if(option === 'homeTime' || option === 'workTime'){
+          user.routine[option] = settings[option];
+        } else {
+          user[option] = settings[option];
         }
-      } else {
-        // Create user
-        // Correctly structures user object for database
-        var user = new models.User({
-          name: settings.name,
-          email: settings.email,
-          homeAddress: settings.homeAddress,
-          // Seed data until Google APIs are set up
-          homeLocation: {lat: 37.783542, lng: -122.408943},
-          workAddress: settings.workAddress,
-          // Seed data until Google APIs are set up
-          workLocation: {lat: 37.7746071, lng: -122.4260718},
-          routine: {
-            workTime: settings.workTime,
-            homeTime: settings.homeTime
-          }
-        });
       }
-      // Save user
-      user.save(function(err,user){
-        if(err) {
-          res.send(500,err);
-          return console.error('Error:', err);
+    } else {
+      // Create user
+      // Correctly structures user object for database
+      user = new models.User({
+        name: settings.name,
+        email: settings.email,
+        homeAddress: settings.homeAddress,
+        workAddress: settings.workAddress,
+        routine: {
+          workTime: settings.workTime,
+          homeTime: settings.homeTime
         }
-        // Responds to client with transit time
-        maps.getDirections(user.homeLocation, user.workLocation)
-        .then(function(route) {
-          res.send(201, {time: maps.getTransitTime(route)});
-        })
-        .catch(function(err){
-          console.error('Error:',err);
-        });
-        console.log('User settings saved', user);
       });
-    }, function(err){
-      console.error(err);
-      res.send(500,err);
+    }
+
+    // TODO: Figure out better way of running something only after
+    // two promises finish (determining the home and work locations)
+    maps.getLatLong(user.homeAddress)
+    .then(function(homeLocation) {
+      maps.getLatLong(user.workAddress)
+      .then (function(workLocation) {
+        // Set user home and work locations
+        user.homeLocation = homeLocation;
+        user.workLocation = workLocation;
+        
+        // Save user
+        user.save(function(err,user){
+          if(err) {
+            res.send(500,err);
+            return console.error('Error:', err);
+          }
+          // Responds to client with transit time
+          maps.getDirections(user.homeLocation, user.workLocation)
+          .then(function(route) {
+            res.send(201, {time: maps.getTransitTime(route)});
+          })
+          .catch(function(err){
+            console.error('Error:',err);
+          });
+          console.log('User settings saved', user);
+        });
+
+      }) // end getLatLong(workAddress)
+      .catch(function(err) {
+        console.error('ERROR:', err);
+        res.send(500, err);
+      });
+    }) // end getLatLong(homeAddress)
+    .catch(function(err) {
+      console.error('ERROR:', err);
+      res.send(500, err);
     });
+  }, function(err) {
+    console.error('ERROR:', err);
+    res.send(500, err);
+  });
 };
 
 // Deletes user from database and responds with 
