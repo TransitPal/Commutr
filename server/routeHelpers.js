@@ -21,15 +21,18 @@ exports.getRoutes = function(req, res) {
   // returns promised user homeLocation and workLocation based on input email
   db.getUser(req.query.email)
   .then(function(user){
+    console.log('user', user)
     utils.getNextServerRequest(user, res);
   }, function(err) {
+    console.log('Errorrrrrred!!!!');
     res.send(500, err);
   });
 };
 
 // Saves new user and reponds with transit time
 exports.saveUser = function(req, res){
-  var settings = req.body;
+  var settings = req.body.user;
+  console.log(settings);
   var email = settings.email;
   
   db.getUser(email)

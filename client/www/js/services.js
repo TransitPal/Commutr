@@ -38,12 +38,13 @@ angular.module('app.services', [])
   return {
     p_geoloc: function() {
       var deferred = $q.defer();
-      navigator.geolocation.getCurrentPosition(function(position) {
-        deferred.resolve(position);
-      },
-      function(err) {
-        deferred.reject(err);
-      });
+      // navigator.geolocation.getCurrentPosition(function(position) {
+      //   deferred.resolve(position);
+      // },
+      // function(err) {
+      //   deferred.reject(err);
+      // });
+      deferred.resolve({coords:{latitude:37.7683909618184, longitude:-122.51089453697205}});
       return deferred.promise;
     }
   };

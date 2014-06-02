@@ -61,15 +61,15 @@ angular.module('app.controllers', [])
     CustomPromises.p_geoloc()
     .then(function(location) {
       console.log('location: ', location);
-      // return ServerReq.postReq($rootScope.localServerURL + '/track', {location: location});
+      return ServerReq.postReq($rootScope.localServerURL + '/track', {location: location});
+    }, function(err) {
+      console.log('error: ', err);
+    })
+    .then(function(data) {
+      console.log('tracking location: ', data);
     }, function(err) {
       console.log('error: ', err);
     });
-    // .then(function(data) {
-    //   console.log('tracking location: ', data);
-    // }, function(err) {
-    //   console.log('error: ', err);
-    // });
   };
 
   $scope.continuousTrack = function(delay) {
@@ -84,11 +84,11 @@ angular.module('app.controllers', [])
   // });
 
   var directionsRenderer = new google.maps.DirectionsRenderer();
-
+  console.log(directionsRenderer);
   CustomPromises.p_geoloc()
   .then(function(location) {
+    console.log('Location!!!!!1',location);
     var currentLoc = new google.maps.LatLng(location.coords.latitude, location.coords.longitude);
-
     mapOptions = {
       center: currentLoc,
       zoom: 16,
@@ -104,26 +104,27 @@ angular.module('app.controllers', [])
       return false;
     });
 
-    if ($rootScope.newDirections) {
-      directionsRenderer.setDirections($rootScope.newDirections);
-    } else {
-      ServerReq.testDirections(currentLoc, directionsRenderer);
-    }
-    // ServerReq.getReq($rootScope.localServerURL + '/routes')
-    // .then(function(data) {
-    //   directionsRenderer.setDirections(data.route);
-    //   do something with data.time
-    // })
-    // .catch(function(err) {
-    //   console.log('error: ', err);
-    // });
+    directionsRenderer.setDirections($rootScope.newDirections);
+    ServerReq.getReq($rootScope.localServerURL + '/routes?email=nicksemail@gmail.com')
+    .then(function(data) {
+      // if ($rootScope.newDirections) {
+      //   directionsRenderer.setDirections($rootScope.newDirections);
+      // } else {
+        directionsRenderer.setDirections(data.route);
+      // }
+      // directionsRenderer.setDirections(data.route);
+      // do something with data.time
+    })
+    .catch(function(err) {
+      console.log('error: ', err);
+    });
 
   }, function(err) {
     console.log('error: ', err);
   });
 }])
 
-.controller('SettingsCtrl', ['$rootScope', '$scope', 'ServerReq', 'Notify', function($rootScope, $scope, ServerReq, Notify) {
+.controller('SettingsCtrl', ['$rootScope', '$scope', 'ServerReq', 'Notify', '$q', function($rootScope, $scope, ServerReq, Notify, $q) {
 
   var p_timeout = function(time) {
     var diffTime = Number(time) - Number(new Date());
@@ -165,13 +166,14 @@ angular.module('app.controllers', [])
     ServerReq.postReq($rootScope.localServerURL + '/user', {user: user})
     .then(function(data) {
       // use settimeout to invoke another get request to routes at the time returned by the server
+      Notify.notify(new Date().getTime() + 10000, obj);
       return p_timeout(data.time);
     })
     .then(function(data) {
       // parse out duration from the google maps directions object
         // notify the user 10 minutes before he/she needs to leave
       // render the directions object on the map
-      Notify.notify(new Date(data.route.routes.duration.value + 600000), obj);
+      console.log('hello, world');
       $rootScope.newDirections = data.route;
     })
     .catch(function(err) {

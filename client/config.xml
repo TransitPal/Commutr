@@ -20,18 +20,18 @@
     <plugin name="Geolocation" value="org.apache.cordova.GeoBroker" />
     <!-- <feature name="Geolocation">
         <param name="android-package" value="org.apache.cordova.GeoBroker" />
-    </feature>
+    </feature> -->
     <feature name="Geolocation">
         <param name="ios-package" value="CDVLocation" />
-    </feature> -->
+    </feature>
 
     <plugin name="InAppBrowser" value="org.apache.cordova.InAppBrowser" />
     <!-- <feature name="InAppBrowser">
         <param name="android-package" value="org.apache.cordova.InAppBrowser" />
-    </feature>
+    </feature> -->
     <feature name="InAppBrowser">
         <param name="ios-package" value="CDVInAppBrowser" />
-    </feature> -->
+    </feature>
 
 
     <!-- These have not been tested on Android -->
