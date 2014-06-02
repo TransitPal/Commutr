@@ -3,6 +3,7 @@ var Q = require('q');
 
 gm.config('key', process.env.GOOGLE_API_KEY);
 var directions = Q.denodeify(gm.directions);
+var geocode = Q.denodeify(gm.geocode);
 
 var getDirections = function(startLoc, endLoc) {
   var queryStart = startLoc.lat + ',' + startLoc.lng;
@@ -20,7 +21,14 @@ var getTransitTime = function(route) {
   return transitTime;
 };
 
+var getLatLong = function(address) {
+  return geocode(address).then(function(geoCodeData) {
+    return geoCodeData.results[0].geometry.location;
+  });
+};
+
 module.exports = {
   getDirections: getDirections,
-  getTransitTime: getTransitTime
+  getTransitTime: getTransitTime,
+  getLatLong: getLatLong
 };
