@@ -13,12 +13,8 @@ var getDirections = function(startLoc, endLoc) {
 };
 
 var getTransitTime = function(route) {
-  var transitTime = 0;
-  var routeLegs = route.routes[0].legs;
-  for (var i = 0; i < routeLegs.length; i++) {
-    transitTime += routeLegs[i].duration.value;
-  }
-  return transitTime;
+  if (!route) { return null; }
+  return route.routes[0].legs[0].duration.value;
 };
 
 var getLatLong = function(address) {
