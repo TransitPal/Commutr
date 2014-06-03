@@ -105,6 +105,7 @@ angular.module('app.controllers', [])
     });
 
     directionsRenderer.setDirections($rootScope.newDirections);
+    /*
     ServerReq.getReq($rootScope.localServerURL + '/routes?email=nicksemail@gmail.com')
     .then(function(data) {
       // if ($rootScope.newDirections) {
@@ -118,7 +119,7 @@ angular.module('app.controllers', [])
     .catch(function(err) {
       console.log('error: ', err);
     });
-
+    */
   }, function(err) {
     console.log('error: ', err);
   });
@@ -157,7 +158,7 @@ angular.module('app.controllers', [])
     }
   });
 
-  var obj = window.plugin.notification.local;
+  // var obj = window.plugin.notification.local;
 
   $scope.postSettings = function(user){
     // var obj = window.plugin.notification.local;
