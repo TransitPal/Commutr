@@ -62,6 +62,5 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services'])
     }
   })
 
-  $urlRouterProvider.otherwise('/tab/track');
-  // $urlRouterProvider.otherwise('/login');
+  $urlRouterProvider.otherwise('/login');
 }]);

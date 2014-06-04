@@ -1,7 +1,8 @@
 angular.module('app.controllers', [])
 
-.controller('LoginCtrl', ['$scope', '$state','$q', function($scope, $state, $q) {
+.controller('LoginCtrl', ['$scope', '$state','$q', '$window', '$rootScope', '$http', function($scope, $state, $q, $window, $rootScope, $http) {
   var p_auth = function(authOptions) {
+    console.log('in p_auth');
     var deferred = $q.defer();
 
     var authUrl = 'https://accounts.google.com/o/oauth2/auth?' +
@@ -11,18 +12,28 @@ angular.module('app.controllers', [])
       "scope=" + authOptions.scope;
 
     var authWindow = window.open(authUrl, '_blank', 'location=no,toolbar=no');
-
+    console.log('After window.open');
     $(authWindow).on('loadstart', function(event) {
-      console.log('event: ', event);
+      alert('event: ', event);
       var url = event.originalEvent.url;
-      var code = /\?code=(.+)$/.exec(url);
-      var error = /\?error=(.+)$/.exec(url);
+      var code = /\#code=(.+)$/.exec(url);
+      var error = /\#error=(.+)$/.exec(url);
 
       if (code || error) {
+        alert('code or error');
         authWindow.close();
       }
       if (code) {
-        deferred.resolve(code);
+        $http.post('https://accounts.google.com/o/oauth2', {code:code, client_id: authOptions.client_id, client_secret: 'secret', redirect_uri: authOptions.redirect_uri, grant_type:"authorization_code"})
+        .success(function(data){
+            // get access_token
+          $rootScope.accessToken = data.access_token;
+          $rootScope.refreshToken = data.refresh_token;
+          deferred.resolve(data);
+        })
+        .error(function(error){
+          deferred.reject(error);
+        })
       } else if (error) {
         deferred.reject(error);
       }
@@ -32,6 +43,7 @@ angular.module('app.controllers', [])
   };
 
   $scope.auth = function() {
+    console.log('In Auth');
     p_auth({
       client_id: '243623987042-ibvoulim8vu4ftgdmpra8son00jgbrj6.apps.googleusercontent.com',
       client_secret: 'secret',
@@ -40,6 +52,14 @@ angular.module('app.controllers', [])
     })
     .then(function(data) {
       console.log('Access Token: ', data);
+      $http.get('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=' + $rootScope.accessToken)
+      .success(function(tokenInfo){
+        $rootScope.userId = tokenInfo.user_id;
+        $state.go('tab.track');
+      })
+      .error(function(err){
+        console.log('Error: ', err);
+      })
       // ServerReq.postReq('/auth', {code: data[1]})
       // .then(function(data) {
       //   console.log('sucessful post, server response: ', data);
@@ -49,10 +69,10 @@ angular.module('app.controllers', [])
       //   console.log('error: ', err);
       //   $state.go('tab.track');
       // });
-      $state.go('tab.track');
     }, function(err) {
       console.log('error: ', err);
     });
+    console.log('end of auth');
   };
 }])
 
