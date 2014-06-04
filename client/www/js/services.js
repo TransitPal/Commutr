@@ -16,20 +16,6 @@ angular.module('app.services', [])
       .success(function(serverData) {
         return serverData;
       });
-    },
-
-    testDirections: function(currentLoc, renderer) {
-      var directionsService = new google.maps.DirectionsService();
-      var request = {
-        origin: currentLoc,
-        destination: new google.maps.LatLng(37.7683909618184, -122.51089453697205),
-        travelMode: google.maps.TravelMode.DRIVING
-      };
-      directionsService.route(request, function(directions, status) {
-        if (status === google.maps.DirectionsStatus.OK) {
-          renderer.setDirections(directions);
-        }
-      });
     }
   };
 }])
@@ -38,13 +24,37 @@ angular.module('app.services', [])
   return {
     p_geoloc: function() {
       var deferred = $q.defer();
-      // navigator.geolocation.getCurrentPosition(function(position) {
-      //   deferred.resolve(position);
-      // },
-      // function(err) {
-      //   deferred.reject(err);
-      // });
-      deferred.resolve({coords:{latitude:37.7683909618184, longitude:-122.51089453697205}});
+      navigator.geolocation.getCurrentPosition(function(position) {
+        deferred.resolve(position);
+      }, function(err) {
+        deferred.reject(err);
+      });
+      return deferred.promise;
+    }
+  };
+}])
+
+.factory('GetGoogleMapDirections', ['$q', function($q) {
+  var directionsService = new google.maps.DirectionsService();
+
+  return {
+    getDirections: function(directionOptions) {
+      var deferred = $q.defer();
+      directionsService.route({
+        origin: new google.maps.LatLng(directionOptions.origin.lat, directionOptions.origin.lng),
+        destination: new google.maps.LatLng(directionOptions.destination.lat, directionOptions.destination.lng),
+        travelMode: google.maps.TravelMode.TRANSIT,
+        transitOptions: {
+          // departureTime: new Date(directionOptions.departureTime),
+          arrivalTime: new Date(directionOptions.arrivalTime)
+        }
+      }, function(directions, status) {
+        if (status === google.maps.DirectionsStatus.OK) {
+          deferred.resolve(directions);
+        } else {
+          deferred.reject(status);
+        }
+      });
       return deferred.promise;
     }
   };

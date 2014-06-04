@@ -2,26 +2,24 @@
   <ion-content class="has-header padding" scroll="false">
     <label class="item item-input">
       <span class="input-label">Home Address</span>
-      <input ng-model="user.homeAddress" type="text">
+      <input ng-model="user.homeAddress" type="text" placeholder="94102">
     </label>
     <label class="item item-input">
       <span class="input-label">Work Address</span>
-      <input ng-model="user.workAddress" type="text">
+      <input ng-model="user.workAddress" type="text" placeholder="94404">
     </label>
     <label class="item item-input">
       <span class="input-label">Work Start</span>
-      <input ng-model="user.workTime" type="number">
+      <input ng-model="user.workTime" type="number" placeholder=9>
     </label>
     <label class="item item-input">
       <span class="input-label">Work End</span>
-      <input ng-model="user.homeTime" type="number">
+      <input ng-model="user.homeTime" type="number" placeholder=18>
     </label>
 
     <br>
-    <div class="center-me">
-      <button class="button button-block" ng-click="postSettings(user)">
-        <i class="icon ion-compose"></i>
-      </button>
-    </div>
+    <button class="button button-block button-positive" ng-click="postSettings(user)">
+      <i class="icon ion-compose"></i>
+    </button>
   </ion-content>
 </ion-view>

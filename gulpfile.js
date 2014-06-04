@@ -50,17 +50,17 @@ gulp.task('view',function(){
     .pipe(open('',options))
 });
 
-gulp.task('emulateIOS',function(){
+gulp.task('buildIOS',function(){
   return gulp.src(paths.client)
     .pipe(shell([
-      'cd client && ionic platform ios && ionic build ios && ionic emulate ios'
+      'cd client && cordova platform remove ios && cordova platform add ios && ionic emulate ios'
     ]));
 });
 
-gulp.task('emulateAndroid',function(){
+gulp.task('buildAnd',function(){
   return gulp.src(paths.client)
     .pipe(shell([
-      'cd client && ionic platform android && ionic build android && ionic emulate android'
+      'cd client && cordova platform remove android && cordova platform add android && ionic run android'
     ]));
 });
 
@@ -74,6 +74,6 @@ gulp.task('runAnd',function(){
 gulp.task('runIos',function(){
   return gulp.src(paths.client)
     .pipe(shell([
-      'cd client && ionic build ios && ionic emulate ios'
+      'cd client && ionic emulate ios'
     ]));
 });
