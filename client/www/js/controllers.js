@@ -117,7 +117,7 @@ angular.module('app.controllers', [])
   $scope.getDirectionOptions = function() {
     ServerReq.getReq($rootScope.localServerURL + '/routes?email=' + $rootScope.userEmail)
     .then(function(serverData) {
-      return GetGoogleMapDirections.getDirections(serverData);
+      return GetGoogleMapDirections.getDirections(serverData.data);
     })
     .then(function(directionsData) {
       directionsRenderer.setDirections(directionsData);
@@ -128,7 +128,7 @@ angular.module('app.controllers', [])
   };
 }])
 
-.controller('SettingsCtrl', ['$rootScope', '$scope', 'ServerReq', 'GetGoogleMapDirections', 'Notify', '$q', function($rootScope, $scope, ServerReq, GetGoogleMapDirections, Notify, $q) {
+.controller('SettingsCtrl', ['$rootScope', '$scope', 'ServerReq', 'GetGoogleMapDirections', 'Notify', '$q', '$http', function($rootScope, $scope, ServerReq, GetGoogleMapDirections, Notify, $q, $http) {
 
   // posts user identifier and settings to server
   $scope.postSettings = function(user){
@@ -137,7 +137,7 @@ angular.module('app.controllers', [])
     ServerReq.postReq($rootScope.localServerURL + '/user', {user: user})
     .then(function(serverData) {
       // get the google map directions from the google directions API
-      return GetGoogleMapDirections.getDirections(serverData);
+      return GetGoogleMapDirections.getDirections(serverData.data);
     })
     .then(function(directionsData) {
       // store the directions on the rootScope for access in the routes controller
