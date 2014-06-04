@@ -3,38 +3,35 @@ angular.module('app.controllers', [])
 .controller('LoginCtrl', ['$scope', '$state','$q', '$window', '$rootScope', '$http', function($scope, $state, $q, $window, $rootScope, $http) {
 
   var p_auth = function(authOptions) {
-    console.log('in p_auth');
+    // console.log('in p_auth');
     var deferred = $q.defer();
 
     var authUrl = 'https://accounts.google.com/o/oauth2/auth?' +
       "client_id=" + authOptions.client_id + "&" +
       "redirect_uri=" + authOptions.redirect_uri + "&" +
-      "response_type=code&" + 
-      "scope=" + authOptions.scope;
+      "response_type=token&" + 
+      "scope=email profile";
+      // "scope=" + authOptions.scope;
 
     var authWindow = window.open(authUrl, '_blank', 'location=no,toolbar=no');
-    console.log('After window.open');
+    // console.log('After window.open');
     $(authWindow).on('loadstart', function(event) {
       // alert('event: ', event);
       var url = event.originalEvent.url;
-      var code = /\?code=(.+)$/.exec(url);
+      if (url.indexOf("access_token=") !== -1) {
+        var code = url.slice(31,url.indexOf("&token_type="));
+      }
+      // var code = /\access_token=(.+)$/.exec(url);
       var error = /\?error=(.+)$/.exec(url);
+      // console.log('code: ', code);
 
       if (code || error) {
         // alert('code or error');
         authWindow.close();
       }
       if (code) {
-        $http.post('https://accounts.google.com/o/oauth2', {code:code, client_id: authOptions.client_id, client_secret: 'secret', redirect_uri: authOptions.redirect_uri, grant_type:"authorization_code"})
-        .success(function(data){
-            // get access_token
-          $rootScope.accessToken = data.access_token;
-          $rootScope.refreshToken = data.refresh_token;
-          deferred.resolve(data);
-        })
-        .error(function(error){
-          deferred.reject(error);
-        })
+        deferred.resolve(code);
+        // deferred.resolve(code[1]);
       } else if (error) {
         deferred.reject(error);
       }
@@ -44,36 +41,49 @@ angular.module('app.controllers', [])
   };
 
   $scope.auth = function() {
-    console.log('In Auth');
-    p_auth({
-      client_id: '243623987042-ibvoulim8vu4ftgdmpra8son00jgbrj6.apps.googleusercontent.com',
-      client_secret: 'secret',
+    // console.log('In Auth');
+
+    var authOptions = {
+      client_id: '243623987042-20jcc57di4ol4u36jr3cvidv66h0h6mi.apps.googleusercontent.com',
+      client_secret: 'topsecret!',
       redirect_uri: 'http://localhost',
       scope: 'https://www.googleapis.com/auth/plus.login'
-    })
-    .then(function(data) {
-      console.log('Access Token: ', data);
-      $state.go('tab.route');
-      $http.get('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=' + $rootScope.accessToken)
+    };
+
+    p_auth(authOptions)
+    // .then(function(code) {
+    //   alert(code);
+
+    //   return $http.post('https://accounts.google.com/o/oauth2/token?' +
+    //   "code=" + code + "&" +
+    //   "client_id=" + authOptions.client_id + "&" +
+    //   "client_secret=" + authOptions.client_secret + "&" +
+    //   "redirect_uri=" + authOptions.redirect_uri + "&" +
+    //   "grant_type=authorization_code")
+    //     // , {code:code, client_id: authOptions.client_id, client_secret: 'secret', redirect_uri: authOptions.redirect_uri, grant_type:"authorization_code"})
+    //   .success(function(data){
+    //     alert('success ' + data);
+    //     return data;
+    //   })
+    //   .error(function(error){
+    //     alert('error ' + error);
+    //     return error;
+    //   });
+    // })
+    .then(function(data){
+      // get access_token
+      $rootScope.accessToken = data;
+      // $rootScope.refreshToken = data.refresh_token;
+      return $http.get('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=' + $rootScope.accessToken)
       .success(function(tokenInfo){
-        $rootScope.userId = tokenInfo.user_id;
-        $state.go('tab.settings');
-      })
-      .error(function(err){
-        console.log('Error: ', err);
-        $state.go('tab.route');
-      })
-      // ServerReq.postReq('/auth', {code: data[1]})
-      // .then(function(data) {
-      //   console.log('sucessful post, server response: ', data);
-      //   $state.go('tab.settings');
-      // })
-      // .catch(function(err) {
-      //   console.log('error: ', err);
-      //   $state.go('tab.settings');
-      // });
-      // $state.go('tab.settings');
-    }, function(err) {
+        return tokenInfo;
+      });
+    })
+    .then(function(tokenInfo) {
+      $rootScope.userId = tokenInfo.data.user_id;
+      $state.go('tab.settings');
+    })
+    .catch(function(err) {
       console.log('error: ', err);
     });
     console.log('end of auth');
