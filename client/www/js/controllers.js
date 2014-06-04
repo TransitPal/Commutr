@@ -1,10 +1,7 @@
 angular.module('app.controllers', [])
 
-<<<<<<< HEAD
 .controller('LoginCtrl', ['$scope', '$state','$q', '$window', '$rootScope', '$http', function($scope, $state, $q, $window, $rootScope, $http) {
-=======
-.controller('LoginCtrl', ['$rootScope', '$scope', '$state','$q', function($rootScope, $scope, $state, $q) {
->>>>>>> b346b50f84075e72bd1b7407d0b60bc37ef06dd1
+
   var p_auth = function(authOptions) {
     console.log('in p_auth');
     var deferred = $q.defer();
@@ -18,13 +15,13 @@ angular.module('app.controllers', [])
     var authWindow = window.open(authUrl, '_blank', 'location=no,toolbar=no');
     console.log('After window.open');
     $(authWindow).on('loadstart', function(event) {
-      alert('event: ', event);
+      // alert('event: ', event);
       var url = event.originalEvent.url;
-      var code = /\#code=(.+)$/.exec(url);
-      var error = /\#error=(.+)$/.exec(url);
+      var code = /\?code=(.+)$/.exec(url);
+      var error = /\?error=(.+)$/.exec(url);
 
       if (code || error) {
-        alert('code or error');
+        // alert('code or error');
         authWindow.close();
       }
       if (code) {
@@ -56,13 +53,15 @@ angular.module('app.controllers', [])
     })
     .then(function(data) {
       console.log('Access Token: ', data);
+      $state.go('tab.route');
       $http.get('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=' + $rootScope.accessToken)
       .success(function(tokenInfo){
         $rootScope.userId = tokenInfo.user_id;
-        $state.go('tab.track');
+        $state.go('tab.settings');
       })
       .error(function(err){
         console.log('Error: ', err);
+        $state.go('tab.route');
       })
       // ServerReq.postReq('/auth', {code: data[1]})
       // .then(function(data) {
@@ -73,10 +72,7 @@ angular.module('app.controllers', [])
       //   console.log('error: ', err);
       //   $state.go('tab.settings');
       // });
-<<<<<<< HEAD
-=======
-      $state.go('tab.settings');
->>>>>>> b346b50f84075e72bd1b7407d0b60bc37ef06dd1
+      // $state.go('tab.settings');
     }, function(err) {
       console.log('error: ', err);
     });
@@ -160,7 +156,7 @@ angular.module('app.controllers', [])
 
   // posts user identifier and settings to server
   $scope.postSettings = function(user){
-    user.email = $rootScope.userEmail;
+    user.email = $rootScope.userId;
     console.log('user: ', user);
     ServerReq.postReq($rootScope.localServerURL + '/user', {user: user})
     .then(function(serverData) {

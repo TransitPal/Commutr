@@ -23,7 +23,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services'])
   // Customizations
   // $rootScope.localServerURL = 'http://localhost:8080/api/v1';
   $rootScope.localServerURL = 'http://commutr-test.azurewebsites.net/api/v1';
-  $rootScope.userEmail = 'nicksemail@gmail.com';
+  // $rootScope.userEmail = 'nicksemail@gmail.com';
 }])
 
 .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
@@ -71,9 +71,8 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services'])
     }
   })
 
-<<<<<<< HEAD
-=======
+
   // $urlRouterProvider.otherwise('/tab/track');
->>>>>>> b346b50f84075e72bd1b7407d0b60bc37ef06dd1
+
   $urlRouterProvider.otherwise('/login');
 }]);
