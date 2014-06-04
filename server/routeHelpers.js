@@ -17,20 +17,22 @@ exports.serveIndex = function(req, res){
   });
 };
 
+// Returns routing object with origin, destination, and arrival time
+// Based on user's routine and current time of day
 exports.getRoutes = function(req, res) {
-  // returns promised user homeLocation and workLocation based on input email
   db.getUser(req.query.email)
   .then(function(user){
     console.log('user', user)
-    utils.getNextServerRequest(user, res);
+    res.send(200, utils.getNextRoute(user));
   }, function(err) {
     console.log('Errorrrrrred!!!!');
     res.send(500, err);
   });
 };
 
-// Saves new user and reponds with transit time
+// Saves new user and reponds with next route
 exports.saveUser = function(req, res){
+  console.log(req.body);
   var settings = req.body.user;
   console.log(settings);
   var email = settings.email;
@@ -78,9 +80,8 @@ exports.saveUser = function(req, res){
             return console.error('Error:', err);
           }
 
-          console.log(user);
-          // Responds to client with time of next request
-          utils.getNextServerRequest(user, res, 201);
+          // Responds to client with routing object
+          res.send(201, utils.getNextRoute(user));
 
           console.log('User settings saved', user);
         });
