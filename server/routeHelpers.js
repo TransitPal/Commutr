@@ -108,6 +108,14 @@ var saveUser = function(req, res){
   });
 };
 
+var saveLocation = function(req, res) {
+  if (!req.params.userId) {
+    return res.send(400);
+  }
+  var userId = req.params.userId;
+  return res.send(200, userId);
+};
+
 // Deletes user from database
 var deleteUser = function(req, res){
   if (!req.params.userId) {
@@ -128,5 +136,6 @@ module.exports = {
   serveIndex: serveIndex,
   getRoutes: getRoutes,
   saveUser: saveUser,
+  saveLocation: saveLocation,
   deleteUser: deleteUser
 };

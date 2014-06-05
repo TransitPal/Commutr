@@ -5,16 +5,15 @@ var helpers = require('./routeHelpers');
 
 require('./config.js')(app, express, routers);
 
-// Refactor complete
+// Website
 app.get('/', helpers.placeholder);
 
-// Refactor complete
+// Directions
 app.get('/api/v1/routes', helpers.getRoutes);
 
-// Refactor complete
+// Users
 app.post('/api/v1/user', helpers.saveUser);
-
-// Complete
+app.post('/api/v1/user/:userId/location', helpers.saveLocation);
 app.delete('/api/v1/user/:userId', helpers.deleteUser);
 
 module.exports = app;
