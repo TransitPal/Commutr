@@ -1,37 +1,33 @@
 angular.module('app.controllers', [])
 
-.controller('LoginCtrl', ['$scope', '$state','$q', '$window', '$rootScope', '$http', function($scope, $state, $q, $window, $rootScope, $http) {
-
+.controller('LoginCtrl', ['$rootScope', '$scope', '$state', '$q', '$http', function($rootScope, $scope, $state, $q, $http) {
   var p_auth = function(authOptions) {
-    // console.log('in p_auth');
     var deferred = $q.defer();
 
     var authUrl = 'https://accounts.google.com/o/oauth2/auth?' +
       "client_id=" + authOptions.client_id + "&" +
       "redirect_uri=" + authOptions.redirect_uri + "&" +
       "response_type=token&" + 
-      "scope=email profile";
-      // "scope=" + authOptions.scope;
+      "scope=" + authOptions.scope;
 
     var authWindow = window.open(authUrl, '_blank', 'location=no,toolbar=no');
-    // console.log('After window.open');
-    $(authWindow).on('loadstart', function(event) {
-      // alert('event: ', event);
-      var url = event.originalEvent.url;
-      if (url.indexOf("access_token=") !== -1) {
-        var code = url.slice(31,url.indexOf("&token_type="));
-      }
-      // var code = /\access_token=(.+)$/.exec(url);
-      var error = /\?error=(.+)$/.exec(url);
-      // console.log('code: ', code);
 
-      if (code || error) {
-        // alert('code or error');
+    $(authWindow).on('loadstart', function(event) {
+      var url = event.originalEvent.url;
+
+      if (url.indexOf("access_token=") !== -1) {
+        var token = url.slice(31,url.indexOf("&token_type="));
+      }
+      if (url.indexOf("?error=") !== -1) {
+        var error = /\?error=(.+)$/.exec(url);
+      }
+
+      if (token || error) {
         authWindow.close();
       }
-      if (code) {
-        deferred.resolve(code);
-        // deferred.resolve(code[1]);
+
+      if (token) {
+        deferred.resolve(token);
       } else if (error) {
         deferred.reject(error);
       }
@@ -41,8 +37,6 @@ angular.module('app.controllers', [])
   };
 
   $scope.auth = function() {
-    // console.log('In Auth');
-
     var authOptions = {
       client_id: '243623987042-20jcc57di4ol4u36jr3cvidv66h0h6mi.apps.googleusercontent.com',
       client_secret: 'topsecret!',
@@ -51,29 +45,8 @@ angular.module('app.controllers', [])
     };
 
     p_auth(authOptions)
-    // .then(function(code) {
-    //   alert(code);
-
-    //   return $http.post('https://accounts.google.com/o/oauth2/token?' +
-    //   "code=" + code + "&" +
-    //   "client_id=" + authOptions.client_id + "&" +
-    //   "client_secret=" + authOptions.client_secret + "&" +
-    //   "redirect_uri=" + authOptions.redirect_uri + "&" +
-    //   "grant_type=authorization_code")
-    //     // , {code:code, client_id: authOptions.client_id, client_secret: 'secret', redirect_uri: authOptions.redirect_uri, grant_type:"authorization_code"})
-    //   .success(function(data){
-    //     alert('success ' + data);
-    //     return data;
-    //   })
-    //   .error(function(error){
-    //     alert('error ' + error);
-    //     return error;
-    //   });
-    // })
-    .then(function(data){
-      // get access_token
-      $rootScope.accessToken = data;
-      // $rootScope.refreshToken = data.refresh_token;
+    .then(function(token) {
+      $rootScope.accessToken = token;
       return $http.get('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=' + $rootScope.accessToken)
       .success(function(tokenInfo){
         return tokenInfo;
@@ -86,32 +59,10 @@ angular.module('app.controllers', [])
     .catch(function(err) {
       console.log('error: ', err);
     });
-    console.log('end of auth');
   };
 }])
 
-.controller('TrackCtrl', ['$rootScope', '$scope', 'ServerReq', 'CustomPromises', function($rootScope, $scope, ServerReq, CustomPromises) {
-  $scope.trackMe = function() {
-    CustomPromises.p_geoloc()
-    .then(function(location) {
-      console.log('location: ', location);
-      return ServerReq.postReq($rootScope.localServerURL + '/track', {location: location});
-    }, function(err) {
-      console.log('error: ', err);
-    })
-    .then(function(data) {
-      console.log('tracking location: ', data);
-    }, function(err) {
-      console.log('error: ', err);
-    });
-  };
-
-  $scope.continuousTrack = function(delay) {
-    setInterval($scope.trackMe, delay);
-  };
-}])
-
-.controller('RouteCtrl', ['$rootScope', '$scope', 'ServerReq', 'CustomPromises', 'GetGoogleMapDirections', '$ionicLoading', function($rootScope, $scope, ServerReq, CustomPromises, GetGoogleMapDirections, $ionicLoading) {
+.controller('RouteCtrl', ['$rootScope', '$scope', 'ServerReq', 'GeoLocate', 'GetGoogleMapDirections', '$ionicLoading', function($rootScope, $scope, ServerReq, GeoLocate, GetGoogleMapDirections, $ionicLoading) {
   // loading screen
   $scope.loading = $ionicLoading.show({
     content: 'Loading...',
@@ -122,11 +73,12 @@ angular.module('app.controllers', [])
   var directionsRenderer = new google.maps.DirectionsRenderer();
 
   // gets the current geolocation
-  CustomPromises.p_geoloc()
-  .then(function(location) {
+  // GeoLocate.p_geolocate()
+  // .then(function(location) {
     // sets the google maps options
     mapOptions = {
-      center: new google.maps.LatLng(location.coords.latitude, location.coords.longitude),
+      center: new google.maps.LatLng(37.7749300, -122.4194200),
+      // center: new google.maps.LatLng(location.coords.latitude, location.coords.longitude),
       zoom: 16,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
@@ -143,13 +95,13 @@ angular.module('app.controllers', [])
       directionsRenderer.setDirections($rootScope.newDirectionsFromSettings);
       $rootScope.newDirectionsFromSettings = undefined;
     }
-  }, function(err) {
-    console.log('error: ', err);
-  });
+  // }, function(err) {
+  //   console.log('error: ', err);
+  // });
 
   // make a request to the server for direction options
   $scope.getDirectionOptions = function() {
-    ServerReq.getReq($rootScope.localServerURL + '/routes?email=' + $rootScope.userEmail)
+    ServerReq.getReq($rootScope.localServerURL + '/routes?email=' + $rootScope.userId)
     .then(function(serverData) {
       return GetGoogleMapDirections.getDirections(serverData.data);
     })
@@ -165,7 +117,7 @@ angular.module('app.controllers', [])
 .controller('SettingsCtrl', ['$rootScope', '$scope', 'ServerReq', 'GetGoogleMapDirections', 'Notify', '$q', '$http', function($rootScope, $scope, ServerReq, GetGoogleMapDirections, Notify, $q, $http) {
 
   // posts user identifier and settings to server
-  $scope.postSettings = function(user){
+  $scope.postSettings = function(user) {
     user.email = $rootScope.userId;
     console.log('user: ', user);
     ServerReq.postReq($rootScope.localServerURL + '/user', {user: user})

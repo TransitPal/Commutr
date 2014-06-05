@@ -29,16 +29,6 @@
             },
             "AndroidManifest.xml": {
                 "parents": {
-                    "/*": [
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />",
-                            "count": 1
-                        }
-                    ],
                     "/manifest/application": [
                         {
                             "xml": "<receiver android:name=\"de.appplant.cordova.plugin.localnotification.Receiver\" />",
@@ -58,6 +48,16 @@
                             "xml": "<uses-permission android:name=\"android.permission.RECEIVE_BOOT_COMPLETED\" />",
                             "count": 1
                         }
+                    ],
+                    "/*": [
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />",
+                            "count": 1
+                        }
                     ]
                 }
             }
@@ -67,21 +67,22 @@
         "com.ionic.keyboard": {
             "PACKAGE_NAME": "com.ionicframework.starter"
         },
+        "de.appplant.cordova.plugin.local-notification": {
+            "PACKAGE_NAME": "com.ionicframework.starter"
+        },
         "org.apache.cordova.console": {
             "PACKAGE_NAME": "com.ionicframework.starter"
         },
-        "org.apache.cordova.device": {
-            "PACKAGE_NAME": "com.ionicframework.starter"
-        },
         "org.apache.cordova.geolocation": {
-            "PACKAGE_NAME": "com.ionicframework.starter"
-        },
-        "de.appplant.cordova.plugin.local-notification": {
             "PACKAGE_NAME": "com.ionicframework.starter"
         },
         "org.apache.cordova.inappbrowser": {
             "PACKAGE_NAME": "com.ionicframework.starter"
         }
     },
-    "dependent_plugins": {}
+    "dependent_plugins": {
+        "org.apache.cordova.device": {
+            "PACKAGE_NAME": "com.ionicframework.starter"
+        }
+    }
 }

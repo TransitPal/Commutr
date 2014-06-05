@@ -20,9 +20,9 @@ angular.module('app.services', [])
   };
 }])
 
-.factory('CustomPromises', ['$q', function($q) {
+.factory('GeoLocate', ['$q', function($q) {
   return {
-    p_geoloc: function() {
+    p_geolocate: function() {
       var deferred = $q.defer();
       navigator.geolocation.getCurrentPosition(function(position) {
         deferred.resolve(position);
