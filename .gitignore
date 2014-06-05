@@ -2,5 +2,5 @@
 node_modules
 npm-debug.log
 /client/platforms/**
-/client/www/lib/
-/client/www/node_modules/
+/client/node_modules
+/client/www/lib
