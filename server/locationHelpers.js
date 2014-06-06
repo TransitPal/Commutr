@@ -10,8 +10,15 @@
 
 var filterByTime = function(collection, start, end){
   var filteredCollection = [];
+  if(end > start){
+    end -= 24;
+  }
   for(var i = 0; i < collection.length; i++){
-    if(start < collection[i].time < end){
+    var hour = new Date(collection[i].time).getHours();
+    if(hour > 12 && end < 0){
+      hour -= 24;
+    }
+    if(start <= hour <= end){
       filteredCollection.push(collection[i]);
     }
   }
@@ -80,5 +87,28 @@ var averageLocation = function (locations){
 };
 
 var findGnome = function (userId){
-  
+  db.getUser(userId)
+  .then(function(user){
+    user.homeLocation = findCenter(user.locations, 1, 23, 4);
+    user.save().exec()
+    .then(function(user){
+      console.log('User: ', user);
+    }, function(err){
+      console.error(err);
+    });
+  })
 };
+
+var findWork = function (userId){
+  db.getUser(userId)
+  .then(function(user){
+    user.workLocation = findCenter(user.locations, 1, 10, 16);
+    user.save().exec()
+    .then(function(user){
+      console.log('User: ', user);
+    }, function(err){
+      console.error(err);
+    });
+  })
+};
+
