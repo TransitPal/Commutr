@@ -75,12 +75,11 @@ angular.module('app.controllers', [])
   // renders map with overlays
   GeoLocate.p_geolocate()
   .then(function(location) {
-    // set the client's geolocation
+    // sets the client's geolocation
     $scope.clientLocation = new google.maps.LatLng(location.coords.latitude, location.coords.longitude);
 
     // sets the google maps options
     mapOptions = {
-      // center: new google.maps.LatLng(37.7749300, -122.4194200),
       center: $scope.clientLocation,
       zoom: 16,
       mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -96,7 +95,7 @@ angular.module('app.controllers', [])
     // sets the google map for the renderer object
     directionsRenderer.setMap($scope.map);
 
-    // if the server sent the client directions from the settings controller, render them
+    // renders server sent directions from the settings controller
     if ($rootScope.newDirectionsFromSettings) {
       directionsRenderer.setDirections($rootScope.newDirectionsFromSettings);
       $rootScope.newDirectionsFromSettings = undefined;
@@ -119,7 +118,7 @@ angular.module('app.controllers', [])
     });
   };
 
-  // renders a marker at the client's geolocation
+  // toggles bounce animation on a marker
   var toggleBounce = function() {
     if ($scope.clientMarker.getAnimation() !== null) {
       $scope.clientMarker.setAnimation(null);
@@ -128,29 +127,48 @@ angular.module('app.controllers', [])
     }
   };
 
+  // renders a marker at the client's geolocation
   $scope.setClientMarker = function() {
     if ($scope.mapReady) {
       GeoLocate.p_geolocate()
       .then(function(location) {
+
+        // creates an info window
+        var infoWindow = new google.maps.InfoWindow({
+          content: "You are running late!"
+        });
+
+        // creates a marker
         var marker = new google.maps.Marker({
           position: new google.maps.LatLng(location.coords.latitude, location.coords.longitude),
-          // map: $scope.map,
           title: "tracker",
           icon: "../img/gnome_small.png",
           // animation: google.maps.Animation.DROP,
+          animation: google.maps.Animation.BOUNCE,
           draggable: true
         });
+
+        // removes the existing marker
         if ($scope.clientMarker) {
           $scope.clientMarker.setMap(null);
           $scope.clientMarker = null;
         }
+
+        // renders the new marker
         marker.setMap($scope.map);
         $scope.clientMarker = marker;
-        // google.maps.event.addListener($scope.clientMarker, 'click', toggleBounce);
+
+        // opens the info window when the marker is clicked
+        google.maps.event.addListener($scope.clientMarker, 'click', function() {
+          infoWindow.open($scope.map, $scope.clientMarker);
+          $scope.clientMarker.setAnimation(null);
+          toggleBounce();
+        });
       });
     }
   };
 
+  // periodically create a new marker
   setInterval($scope.setClientMarker, 5000);
 }])
 
