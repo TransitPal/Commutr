@@ -8,9 +8,17 @@
 
 // data = [locationPoint1, locationPoint2, ..., locationPointN];
 
+// var data = [];
+// var coords = kml.kml.Document.Placemark['gx:Track']['gx:coord'];
+// for(var i = 0; i < coords.length; i++){
+//    var split = coords[i].split(' ');
+//    data.push({location: {lat: split[0], lng: split[1]}, time: kml.kml.Document.Placemark['gx:Track'].when[i]})
+// }
+// 
+
 var filterByTime = function(collection, start, end){
   var filteredCollection = [];
-  if(end > start){
+  if(end < start){
     end -= 24;
   }
   for(var i = 0; i < collection.length; i++){
@@ -18,7 +26,7 @@ var filterByTime = function(collection, start, end){
     if(hour > 12 && end < 0){
       hour -= 24;
     }
-    if(start <= hour <= end){
+    if((start <= hour) && (hour <= end)){
       filteredCollection.push(collection[i]);
     }
   }
@@ -30,7 +38,7 @@ var toRadians = function(thing){
 }
 
 var calculateDistance = function(point1, point2){
-  var R = 6371;
+  var R = 6371000;
   var dx = toRadians(point2.lat - point1.lat);
   var dy = toRadians(point2.lng - point1.lng);
   var median = Math.pow(Math.sin(dx / 2), 2) + 
@@ -45,7 +53,7 @@ var calculateDistance = function(point1, point2){
 var countClosestPoints = function(point, collection, radius){
   var count = 0;
   for(var i = 0; i < collection.length; i++){
-    if(calculateDistance(point,collection[i].location) <= radius) count++;
+    if(calculateDistance(point.location,collection[i].location) <= radius) count++;
   }
   return count;
 };
@@ -59,7 +67,7 @@ var findCenter = function(collection, radius, start, end){
     var currentCount = countClosestPoints(filteredLocations[i], filteredLocations, radius);
     if (currentCount > highCount){
       highCount = currentCount;
-      centerLocations = [filteredLocatons[i]];
+      centerLocations = [filteredLocations[i]];
     }else if(currentCount === highCount){
       centerLocations.push(filteredLocations[i]);
     }
