@@ -25,7 +25,6 @@ angular.module('app.controllers', [])
       if (token || error) {
         authWindow.close();
       }
-
       if (token) {
         deferred.resolve(token);
       } else if (error) {
@@ -81,7 +80,7 @@ angular.module('app.controllers', [])
     // sets the google maps options
     mapOptions = {
       center: $scope.clientLocation,
-      zoom: 16,
+      zoom: 8,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 
@@ -118,20 +117,19 @@ angular.module('app.controllers', [])
     });
   };
 
-  // toggles bounce animation on a marker
-  var toggleBounce = function() {
-    if ($scope.clientMarker.getAnimation() !== null) {
-      $scope.clientMarker.setAnimation(null);
-    } else {
-      $scope.clientMarker.setAnimation(google.maps.Animation.BOUNCE);
-    }
-  };
+  // saves geolocations and markers
+  $scope.geolocations = [];
+  $scope.markers = [];
+  $scope.polylines;
 
   // renders a marker at the client's geolocation
   $scope.setClientMarker = function() {
     if ($scope.mapReady) {
       GeoLocate.p_geolocate()
       .then(function(location) {
+        newGeolocation = new google.maps.LatLng(location.coords.latitude + Math.random()*0.8, location.coords.longitude + Math.random()*0.8);
+        // newGeolocation = new google.maps.LatLng(location.coords.latitude, location.coords.longitude);
+        $scope.geolocations.push(newGeolocation);
 
         // creates an info window
         var infoWindow = new google.maps.InfoWindow({
@@ -140,21 +138,24 @@ angular.module('app.controllers', [])
 
         // creates a marker
         var marker = new google.maps.Marker({
-          position: new google.maps.LatLng(location.coords.latitude, location.coords.longitude),
-          title: "tracker",
+          position: newGeolocation,
+          title: "Client Geolocation",
           icon: "../img/gnome_small.png",
           // animation: google.maps.Animation.DROP,
           animation: google.maps.Animation.BOUNCE,
           draggable: true
         });
 
-        // removes the existing marker
+        // save the marker;
+        $scope.markers.push(marker);
+
+        // removes the existing marker from the map
         if ($scope.clientMarker) {
           $scope.clientMarker.setMap(null);
-          $scope.clientMarker = null;
         }
 
-        // renders the new marker
+        // renders the new marker and recenters the map on that marker
+        // $scope.map.setCenter(newGeolocation);
         marker.setMap($scope.map);
         $scope.clientMarker = marker;
 
@@ -162,18 +163,51 @@ angular.module('app.controllers', [])
         google.maps.event.addListener($scope.clientMarker, 'click', function() {
           infoWindow.open($scope.map, $scope.clientMarker);
           $scope.clientMarker.setAnimation(null);
-          toggleBounce();
         });
       });
     }
   };
 
   // periodically create a new marker
-  setInterval($scope.setClientMarker, 5000);
+  setInterval($scope.setClientMarker, 1000);
+
+  // renders all markers and polylines
+  $scope.showLayers = function(markers, geolocations) {
+    // renders all markers
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].setAnimation(google.maps.Animation.DROP);
+      markers[i].setMap($scope.map);
+    }
+
+    // renders polylines for all geolocations
+    var polylines = new google.maps.Polyline({
+      path: geolocations,
+      geodesic: true,
+      strokeColor: 'blue',
+      strokeOpacity: 0.8,
+      strokeWeight: 1
+    });
+
+    polylines.setMap($scope.map);
+    $scope.polylines = polylines;
+  };
+
+  // hides all markers and polylines
+  $scope.hideLayers = function(markers, polylines) {
+    // hides all markers
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].setAnimation(null);
+      markers[i].setMap(null);
+    }
+
+    // hides all polylines
+    if (polylines) {
+      polylines.setMap(null);
+    }
+  };
 }])
 
 .controller('SettingsCtrl', ['$rootScope', '$scope', 'ServerReq', 'GetGoogleMapDirections', 'Notify', '$q', '$http', function($rootScope, $scope, ServerReq, GetGoogleMapDirections, Notify, $q, $http) {
-
   // posts user identifier and settings to server
   $scope.postSettings = function(user) {
     user.email = $rootScope.userId;
