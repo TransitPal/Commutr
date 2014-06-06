@@ -66,7 +66,8 @@ var saveUser = function(req, res){
         routine: {
           workTime: settings.workTime,
           homeTime: settings.homeTime
-        }
+        },
+        locations: []
       });
     }
 
