@@ -72,32 +72,38 @@ angular.module('app.controllers', [])
   // instantiates the renderer object for google map directions
   var directionsRenderer = new google.maps.DirectionsRenderer();
 
-  // gets the current geolocation
-  // GeoLocate.p_geolocate()
-  // .then(function(location) {
+  // renders map with overlays
+  GeoLocate.p_geolocate()
+  .then(function(location) {
+    // set the client's geolocation
+    $scope.clientLocation = new google.maps.LatLng(location.coords.latitude, location.coords.longitude);
+
     // sets the google maps options
     mapOptions = {
-      center: new google.maps.LatLng(37.7749300, -122.4194200),
-      // center: new google.maps.LatLng(location.coords.latitude, location.coords.longitude),
+      // center: new google.maps.LatLng(37.7749300, -122.4194200),
+      center: $scope.clientLocation,
       zoom: 16,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 
     // creates the google map
-    var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    $scope.map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    $scope.mapReady = true;
+
+    // hides the loading modal
     $scope.loading.hide();
 
-    // passes the google map to the renderer object
-    directionsRenderer.setMap(map);
+    // sets the google map for the renderer object
+    directionsRenderer.setMap($scope.map);
 
     // if the server sent the client directions from the settings controller, render them
     if ($rootScope.newDirectionsFromSettings) {
       directionsRenderer.setDirections($rootScope.newDirectionsFromSettings);
       $rootScope.newDirectionsFromSettings = undefined;
     }
-  // }, function(err) {
-  //   console.log('error: ', err);
-  // });
+  }, function(err) {
+    console.log('error: ', err);
+  });
 
   // make a request to the server for direction options
   $scope.getDirectionOptions = function() {
@@ -112,6 +118,40 @@ angular.module('app.controllers', [])
       console.log('error: ', err);
     });
   };
+
+  // renders a marker at the client's geolocation
+  var toggleBounce = function() {
+    if ($scope.clientMarker.getAnimation() !== null) {
+      $scope.clientMarker.setAnimation(null);
+    } else {
+      $scope.clientMarker.setAnimation(google.maps.Animation.BOUNCE);
+    }
+  };
+
+  $scope.setClientMarker = function() {
+    if ($scope.mapReady) {
+      GeoLocate.p_geolocate()
+      .then(function(location) {
+        var marker = new google.maps.Marker({
+          position: new google.maps.LatLng(location.coords.latitude, location.coords.longitude),
+          // map: $scope.map,
+          title: "tracker",
+          icon: "../img/gnome_small.png",
+          // animation: google.maps.Animation.DROP,
+          draggable: true
+        });
+        if ($scope.clientMarker) {
+          $scope.clientMarker.setMap(null);
+          $scope.clientMarker = null;
+        }
+        marker.setMap($scope.map);
+        $scope.clientMarker = marker;
+        // google.maps.event.addListener($scope.clientMarker, 'click', toggleBounce);
+      });
+    }
+  };
+
+  setInterval($scope.setClientMarker, 5000);
 }])
 
 .controller('SettingsCtrl', ['$rootScope', '$scope', 'ServerReq', 'GetGoogleMapDirections', 'Notify', '$q', '$http', function($rootScope, $scope, ServerReq, GetGoogleMapDirections, Notify, $q, $http) {

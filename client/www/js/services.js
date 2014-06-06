@@ -28,6 +28,10 @@ angular.module('app.services', [])
         deferred.resolve(position);
       }, function(err) {
         deferred.reject(err);
+      }, {
+        maximumAge: 3000,
+        timeout: 5000,
+        enableHighAccuracy: true
       });
       return deferred.promise;
     }
