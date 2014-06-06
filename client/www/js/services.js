@@ -31,7 +31,7 @@ angular.module('app.services', [])
       }, {
         maximumAge: 3000,
         timeout: 5000,
-        enableHighAccuracy: true
+        enableHighAccuracy: false
       });
       return deferred.promise;
     }
