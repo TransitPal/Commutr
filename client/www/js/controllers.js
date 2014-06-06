@@ -62,19 +62,22 @@ angular.module('app.controllers', [])
 }])
 
 .controller('RouteCtrl', ['$rootScope', '$scope', 'ServerReq', 'GeoLocate', 'GetGoogleMapDirections', '$ionicLoading', function($rootScope, $scope, ServerReq, GeoLocate, GetGoogleMapDirections, $ionicLoading) {
-  // saves geolocations, markers, and polylines
   $scope.geolocations = [];
   $scope.markers = [];
   $scope.polylines;
+  $scope.hideLayers = true;
+  $scope.hideLayersButtonText = "Show Locations";
+  $scope.hideWeather = true;
+  $scope.hideWeatherButtonText = "Show Weather";
 
   // instantiates the renderer object for google map directions
   var directionsRenderer = new google.maps.DirectionsRenderer();
 
   // creates loading modal screen
-  // $ionicLoading.show({
-  //   content: 'Loading...',
-  //   showBackdrop: false
-  // });
+  $ionicLoading.show({
+    content: 'Loading...',
+    showBackdrop: false
+  });
 
   // renders map with overlays
   GeoLocate.p_geolocate()
@@ -85,7 +88,7 @@ angular.module('app.controllers', [])
     // sets the google maps options
     mapOptions = {
       center: $scope.clientLocation,
-      zoom: 8,
+      zoom: 16,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 
@@ -103,7 +106,7 @@ angular.module('app.controllers', [])
     }
 
     // hides the loading modal
-    // $ionicLoading.hide();
+    $ionicLoading.hide();
   }, function(err) {
     console.log('error: ', err);
   });
@@ -171,55 +174,79 @@ angular.module('app.controllers', [])
   // periodically create a new marker
   setInterval($scope.setClientMarker, 2000);
 
-  // renders all markers and polylines
-  $scope.showLayers = function(markers, geolocations) {
-    // renders all markers
-    for (var i = 0; i < markers.length; i++) {
-      markers[i].setAnimation(google.maps.Animation.DROP);
-      markers[i].setMap($scope.map);
+  // renders or hides all markers and polylines
+  $scope.showOrHideLayers = function() {
+    if ($scope.hideLayers) {
+      // renders all markers
+      for (var i = 0; i < $scope.markers.length; i++) {
+        $scope.markers[i].setAnimation(google.maps.Animation.DROP);
+        $scope.markers[i].setMap($scope.map);
+      }
+
+      // renders polylines for all geolocations
+      $scope.polylines = new google.maps.Polyline({
+        path: $scope.geolocations,
+        geodesic: true,
+        strokeColor: 'blue',
+        strokeOpacity: 0.8,
+        strokeWeight: 1
+      });
+
+      $scope.polylines.setMap($scope.map);
+
+      $scope.hideLayers = !$scope.hideLayers;
+      $scope.hideLayersButtonText = "Hide Locations";
+    } else {
+      // hides all markers
+      for (var i = 0; i < $scope.markers.length; i++) {
+        $scope.markers[i].setAnimation(null);
+        $scope.markers[i].setMap(null);
+      }
+
+      // hides all polylines
+      if ($scope.polylines) {
+        $scope.polylines.setMap(null);
+      }
+      $scope.hideLayers = !$scope.hideLayers;
+      $scope.hideLayersButtonText = "Show Locations";
     }
-
-    // renders polylines for all geolocations
-    var polylines = new google.maps.Polyline({
-      path: geolocations,
-      geodesic: true,
-      strokeColor: 'blue',
-      strokeOpacity: 0.8,
-      strokeWeight: 1
-    });
-
-    polylines.setMap($scope.map);
-    $scope.polylines = polylines;
   };
 
-  // hides all markers and polylines
-  $scope.hideLayers = function(markers, polylines) {
-    // hides all markers
-    for (var i = 0; i < markers.length; i++) {
-      markers[i].setAnimation(null);
-      markers[i].setMap(null);
+  // renders the cloud and weather layers
+  $scope.showOrHideWeather = function() {
+    if ($scope.hideWeather) {
+      // renders cloud layer
+      $scope.cloudLayer = new google.maps.weather.CloudLayer();
+
+      $scope.cloudLayer.setMap($scope.map);
+
+      // renders weather layer
+      $scope.weatherLayer = new google.maps.weather.WeatherLayer({
+        clickable: true,
+        labelColor: "black",
+        suppressInfoWindows: false,
+        temperatureUnits: google.maps.weather.TemperatureUnit.FAHRENHEIT,
+        windSpeedUnits: google.maps.weather.TemperatureUnit.MILES_PER_HOUR
+      });
+
+      $scope.weatherLayer.setMap($scope.map);
+
+      // adds click event listener to weather layer
+      google.maps.event.addListener($scope.weatherLayer, 'click', function(event) {
+        alert('The current temperature at ' + event.featureDetails.location + ' is '
+          + event.featureDetails.current.temperature + ' degrees.');
+      });
+
+      $scope.hideWeather = !$scope.hideWeather;
+      $scope.hideWeatherButtonText = "Hide Weather";
+    } else {
+      // hides cloud and weather layers
+      $scope.cloudLayer.setMap(null);
+      $scope.weatherLayer.setMap(null);
+
+      $scope.hideWeather = !$scope.hideWeather;
+      $scope.hideWeatherButtonText = "Show Weather";
     }
-
-    // hides all polylines
-    if (polylines) {
-      polylines.setMap(null);
-    }
-  };
-
-  // renders the weather and cloud layers
-  $scope.showWeather = function() {
-    var cloudLayer = new google.maps.weather.CloudLayer();
-    cloudLayer.setMap($scope.map);
-
-    var weatherLayer = new google.maps.weather.WeatherLayer({
-      temperatureUnits: google.maps.weather.TemperatureUnit.FAHRENHEIT
-    });
-    weatherLayer.setMap($scope.map);
-
-    google.maps.event.addListener(weatherLayer, 'click', function(event) {
-      alert('The current temperature at ' + event.featureDetails.location + ' is '
-        + event.featureDetails.current.temperature + ' degrees.');
-    });
   };
 }])
 
@@ -261,8 +288,11 @@ angular.module('app.controllers', [])
     return deferred.promise;
   };
 
-
-  var obj = window.plugin.notification.local;
-  Notify.notify(new Date().getTime() + 10000, obj);
+  window.plugin.notification.local.add({
+    date: new Date(new Date().getTime() + 10000),
+    repeat: 'daily',
+    message: "You wouldn't want to be late...again.",
+    title: "It might be time for you to leave, friend."
+  });
 */
 }]);

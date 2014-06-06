@@ -1,9 +1,8 @@
 <ion-view title="My Route">
   <ion-content class="has-header padding" scroll="true">
-    <button class="button button-positive" ng-click="getDirectionOptions()">Show Route</button>
-    <button class="button button-positive" ng-click="showLayers(markers, geolocations)">Show</button>
-    <button class="button button-positive" ng-click="hideLayers(markers, polylines)">Hide</button>
-    <button class="button button-positive" ng-click="showWeather()">Weather</button>
+    <button class="button button-block button-positive" ng-click="getDirectionOptions()">Get My Route</button>
+    <button class="button button-positive" ng-click="showOrHideLayers()">{{hideLayersButtonText}}</button>
+    <button class="button button-positive" ng-click="showOrHideWeather()">{{hideWeatherButtonText}}</button>
     <div id="map"></div>
   </ion-content>
 </ion-view>
