@@ -50,6 +50,7 @@ angular.module('app.services', [])
           origin: clientLocation,
           destination: new google.maps.LatLng(directionOptions.destination.lat, directionOptions.destination.lng),
           travelMode: google.maps.TravelMode.TRANSIT,
+          provideRouteAlternatives: true,
           transitOptions: {
             departureTime: new Date(),
           }

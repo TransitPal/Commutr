@@ -61,7 +61,7 @@ angular.module('app.controllers', [])
   };
 }])
 
-.controller('RouteCtrl', ['$rootScope', '$scope', 'ServerReq', 'GeoLocate', 'GetGoogleMapDirections', '$ionicLoading', function($rootScope, $scope, ServerReq, GeoLocate, GetGoogleMapDirections, $ionicLoading) {
+.controller('RouteCtrl', ['$rootScope', '$scope', 'ServerReq', 'GeoLocate', 'GetGoogleMapDirections', '$ionicLoading', '$ionicBackdrop', '$ionicModal', function($rootScope, $scope, ServerReq, GeoLocate, GetGoogleMapDirections, $ionicLoading, $ionicBackdrop, $ionicModal) {
   $scope.geolocations = [];
   $scope.markers = [];
   $scope.polylines;
@@ -69,15 +69,17 @@ angular.module('app.controllers', [])
   $scope.hideLayersButtonText = "Locations";
   $scope.hideWeather = true;
   $scope.hideWeatherButtonText = "Weather";
+  $scope.showDirectionsButton = false;
 
   // instantiates the renderer object for google map directions
   var directionsRenderer = new google.maps.DirectionsRenderer();
 
-  // creates loading modal screen
+  // creates loading modal screen and backdrop
   $ionicLoading.show({
     content: 'Loading...',
-    showBackdrop: false
+    showBackdrop: true
   });
+  $ionicBackdrop.retain();
 
   // renders map with overlays
   GeoLocate.p_geolocate()
@@ -105,20 +107,48 @@ angular.module('app.controllers', [])
       $rootScope.directionOptionsFromSettings = undefined;
     }
 
-    // hides the loading modal
+    // hides the loading modal and backdrop
     $ionicLoading.hide();
+    $ionicBackdrop.release();
   }, function(err) {
     console.log('error: ', err);
   });
 
+  $ionicModal.fromTemplateUrl('panel.html', {
+    scope: $scope,
+    animation: "fade-in"
+  }).then(function(modal) {
+    $scope.modal = modal;
+  });
+
+  $scope.openModal = function() {
+    $scope.modal.show();
+    // sets the directions panel for the renderer object
+    directionsRenderer.setPanel(document.getElementById("panel"));
+  };
+
+  $scope.closeModal = function() {
+    $scope.modal.hide();
+  };
+
+  var removeModal = function() {
+    if ($scope.modal) {
+      $scope.modal.remove();
+    }
+  };
+
   // makes requests to get directions
   $scope.getDirections = function(clientLocation, getDirectionsNow) {
+    // removes modal if it exists
+    removeModal();
+
     ServerReq.getReq($rootScope.localServerURL + '/routes?email=' + $rootScope.userId)
     .then(function(serverData) {
       return GetGoogleMapDirections.getDirections(serverData.data, clientLocation, getDirectionsNow);
     })
     .then(function(directionsData) {
       directionsRenderer.setDirections(directionsData);
+      $scope.showDirectionsButton = true;
     })
     .catch(function(err) {
       console.log('error: ', err);
