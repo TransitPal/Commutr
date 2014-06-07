@@ -1,6 +1,23 @@
 <ion-view title="My Route">
-  <ion-content class="has-header padding" scroll="false">
-    <button class="button button-block button-positive" ng-click="getDirectionOptions()">Get Directions</button>
+  <ion-content class="has-header padding" scroll="true">
     <div id="map"></div>
+    
+    <div class="row">
+      <div class="col col-50">
+        <button class="button button-positive" ng-click="getDirectionOptions()">Get My Route</button>
+      </div>
+      <div class="col">
+        <label class="checkbox">
+          <input ng-click="showOrHideLayers()" type="checkbox">
+          {{hideLayersButtonText}}
+        </label>
+      </div>
+      <div class="col">
+        <label class="checkbox">
+          <input ng-click="showOrHideWeather()" type="checkbox">
+          {{hideWeatherButtonText}}
+        </label>
+      </div>
+    </div>
   </ion-content>
 </ion-view>

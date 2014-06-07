@@ -10,7 +10,7 @@ angular.module('app.controllers', [])
       "response_type=token&" + 
       "scope=" + authOptions.scope;
 
-    var authWindow = window.open(authUrl, '_blank', 'location=no,toolbar=no');
+    var authWindow = window.open(authUrl, '_blank', 'location=no, toolbar=no');
 
     $(authWindow).on('loadstart', function(event) {
       var url = event.originalEvent.url;
@@ -25,7 +25,6 @@ angular.module('app.controllers', [])
       if (token || error) {
         authWindow.close();
       }
-
       if (token) {
         deferred.resolve(token);
       } else if (error) {
@@ -39,9 +38,9 @@ angular.module('app.controllers', [])
   $scope.auth = function() {
     var authOptions = {
       client_id: '243623987042-20jcc57di4ol4u36jr3cvidv66h0h6mi.apps.googleusercontent.com',
-      client_secret: 'topsecret!',
+      client_secret: 'topsecret',
       redirect_uri: 'http://localhost',
-      scope: 'https://www.googleapis.com/auth/plus.login'
+      scope: 'email'
     };
 
     p_auth(authOptions)
@@ -63,41 +62,54 @@ angular.module('app.controllers', [])
 }])
 
 .controller('RouteCtrl', ['$rootScope', '$scope', 'ServerReq', 'GeoLocate', 'GetGoogleMapDirections', '$ionicLoading', function($rootScope, $scope, ServerReq, GeoLocate, GetGoogleMapDirections, $ionicLoading) {
-  // loading screen
-  $scope.loading = $ionicLoading.show({
-    content: 'Loading...',
-    showBackdrop: false
-  });
+  $scope.geolocations = [];
+  $scope.markers = [];
+  $scope.polylines;
+  $scope.hideLayers = true;
+  $scope.hideLayersButtonText = "Locations";
+  $scope.hideWeather = true;
+  $scope.hideWeatherButtonText = "Weather";
 
   // instantiates the renderer object for google map directions
   var directionsRenderer = new google.maps.DirectionsRenderer();
 
-  // gets the current geolocation
-  // GeoLocate.p_geolocate()
-  // .then(function(location) {
+  // creates loading modal screen
+  $ionicLoading.show({
+    content: 'Loading...',
+    showBackdrop: false
+  });
+
+  // renders map with overlays
+  GeoLocate.p_geolocate()
+  .then(function(location) {
+    // sets the client's geolocation
+    $scope.clientLocation = new google.maps.LatLng(location.coords.latitude, location.coords.longitude);
+
     // sets the google maps options
     mapOptions = {
-      center: new google.maps.LatLng(37.7749300, -122.4194200),
-      // center: new google.maps.LatLng(location.coords.latitude, location.coords.longitude),
+      center: $scope.clientLocation,
       zoom: 16,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 
     // creates the google map
-    var map = new google.maps.Map(document.getElementById("map"), mapOptions);
-    $scope.loading.hide();
+    $scope.map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    $scope.mapReady = true;
 
-    // passes the google map to the renderer object
-    directionsRenderer.setMap(map);
+    // sets the google map for the renderer object
+    directionsRenderer.setMap($scope.map);
 
-    // if the server sent the client directions from the settings controller, render them
-    if ($rootScope.newDirectionsFromSettings) {
-      directionsRenderer.setDirections($rootScope.newDirectionsFromSettings);
-      $rootScope.newDirectionsFromSettings = undefined;
+    // renders server sent directions from the settings controller
+    if ($rootScope.directionOptionsFromSettings) {
+      directionsRenderer.setDirections($rootScope.directionOptionsFromSettings);
+      $rootScope.directionOptionsFromSettings = undefined;
     }
-  // }, function(err) {
-  //   console.log('error: ', err);
-  // });
+
+    // hides the loading modal
+    $ionicLoading.hide();
+  }, function(err) {
+    console.log('error: ', err);
+  });
 
   // make a request to the server for direction options
   $scope.getDirectionOptions = function() {
@@ -112,10 +124,129 @@ angular.module('app.controllers', [])
       console.log('error: ', err);
     });
   };
+
+  // renders a marker at the client's geolocation
+  $scope.setClientMarker = function() {
+    if ($scope.mapReady) {
+      GeoLocate.p_geolocate()
+      .then(function(location) {
+        // newGeolocation = new google.maps.LatLng(location.coords.latitude + Math.random()*0.8, location.coords.longitude + Math.random()*0.8);
+        newGeolocation = new google.maps.LatLng(location.coords.latitude, location.coords.longitude);
+        $scope.geolocations.push(newGeolocation);
+
+        // creates an info window
+        var infoWindow = new google.maps.InfoWindow({
+          content: "You are running late!"
+        });
+
+        // creates a marker
+        var marker = new google.maps.Marker({
+          position: newGeolocation,
+          title: "Client Geolocation",
+          icon: "./img/gnome.png",
+          // animation: google.maps.Animation.DROP,
+          animation: google.maps.Animation.BOUNCE,
+          draggable: true
+        });
+
+        // save the marker;
+        $scope.markers.push(marker);
+
+        // removes the existing marker from the map
+        if ($scope.clientMarker) {
+          $scope.clientMarker.setMap(null);
+        }
+
+        // renders the new marker and recenters the map on that marker
+        // $scope.map.setCenter(newGeolocation);
+        marker.setMap($scope.map);
+        $scope.clientMarker = marker;
+
+        // opens the info window when the marker is clicked
+        google.maps.event.addListener($scope.clientMarker, 'click', function() {
+          infoWindow.open($scope.map, $scope.clientMarker);
+          $scope.clientMarker.setAnimation(null);
+        });
+      });
+    }
+  };
+
+  // periodically create a new marker
+  setInterval($scope.setClientMarker, 2000);
+
+  // renders or hides all markers and polylines
+  $scope.showOrHideLayers = function() {
+    if ($scope.hideLayers) {
+      // renders all markers
+      for (var i = 0; i < $scope.markers.length; i++) {
+        $scope.markers[i].setAnimation(google.maps.Animation.DROP);
+        $scope.markers[i].setMap($scope.map);
+      }
+
+      // renders polylines for all geolocations
+      $scope.polylines = new google.maps.Polyline({
+        path: $scope.geolocations,
+        geodesic: true,
+        strokeColor: "blue",
+        strokeOpacity: 1,
+        strokeWeight: 1
+      });
+
+      $scope.polylines.setMap($scope.map);
+
+      $scope.hideLayers = !$scope.hideLayers;
+    } else {
+      // hides all markers
+      for (var i = 0; i < $scope.markers.length; i++) {
+        $scope.markers[i].setAnimation(null);
+        $scope.markers[i].setMap(null);
+      }
+
+      // hides all polylines
+      if ($scope.polylines) {
+        $scope.polylines.setMap(null);
+      }
+      $scope.hideLayers = !$scope.hideLayers;
+    }
+  };
+
+  // renders the cloud and weather layers
+  $scope.showOrHideWeather = function() {
+    if ($scope.hideWeather) {
+      // renders cloud layer
+      $scope.cloudLayer = new google.maps.weather.CloudLayer();
+
+      $scope.cloudLayer.setMap($scope.map);
+
+      // renders weather layer
+      $scope.weatherLayer = new google.maps.weather.WeatherLayer({
+        clickable: true,
+        labelColor: "black",
+        suppressInfoWindows: false,
+        temperatureUnits: google.maps.weather.TemperatureUnit.FAHRENHEIT,
+        windSpeedUnits: google.maps.weather.TemperatureUnit.MILES_PER_HOUR
+      });
+
+      $scope.weatherLayer.setMap($scope.map);
+
+      // adds click event listener to weather layer
+      google.maps.event.addListener($scope.weatherLayer, 'click', function(event) {
+        alert('The current temperature at ' + event.featureDetails.location + ' is '
+          + event.featureDetails.current.temperature + ' degrees.');
+      });
+
+      $scope.hideWeather = !$scope.hideWeather;
+    } else {
+      // hides cloud and weather layers
+      $scope.cloudLayer.setMap(null);
+      $scope.weatherLayer.setMap(null);
+
+      $scope.hideWeather = !$scope.hideWeather;
+    }
+  };
 }])
 
-.controller('SettingsCtrl', ['$rootScope', '$scope', 'ServerReq', 'GetGoogleMapDirections', 'Notify', '$q', '$http', function($rootScope, $scope, ServerReq, GetGoogleMapDirections, Notify, $q, $http) {
-
+.controller('SettingsCtrl', ['$rootScope', '$scope', '$state', 'ServerReq', 'GetGoogleMapDirections', 'Notify', '$q', '$http', function($rootScope, $scope, $state, ServerReq, GetGoogleMapDirections, Notify, $q, $http) {
   // posts user identifier and settings to server
   $scope.postSettings = function(user) {
     user.email = $rootScope.userId;
@@ -127,7 +258,8 @@ angular.module('app.controllers', [])
     })
     .then(function(directionsData) {
       // store the directions on the rootScope for access in the routes controller
-      $rootScope.newDirectionsFromSettings = directionsData;
+      $rootScope.directionOptionsFromSettings = directionsData;
+      $state.go('tab.route');
     })
     .catch(function(err) {
       console.log('error: ', err);
