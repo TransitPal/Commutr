@@ -132,6 +132,11 @@ angular.module('app.controllers', [])
       .then(function(location) {
         // newGeolocation = new google.maps.LatLng(location.coords.latitude + Math.random()*0.8, location.coords.longitude + Math.random()*0.8);
         newGeolocation = new google.maps.LatLng(location.coords.latitude, location.coords.longitude);
+
+        // prevents geolocations array from exceeding maxMarkers
+        if ($rootScope.maxMarkers <= $scope.geolocations.length) {
+          $scope.geolocations.shift();
+        }
         $scope.geolocations.push(newGeolocation);
 
         // creates an info window
@@ -149,7 +154,10 @@ angular.module('app.controllers', [])
           draggable: true
         });
 
-        // save the marker;
+        // prevents markers array from exceeding maxMarkers
+        if ($rootScope.maxMarkers <= $scope.markers.length) {
+          $scope.markers.shift();
+        }
         $scope.markers.push(marker);
 
         // removes the existing marker from the map
@@ -193,8 +201,6 @@ angular.module('app.controllers', [])
       });
 
       $scope.polylines.setMap($scope.map);
-
-      $scope.hideLayers = !$scope.hideLayers;
     } else {
       // hides all markers
       for (var i = 0; i < $scope.markers.length; i++) {
@@ -206,8 +212,9 @@ angular.module('app.controllers', [])
       if ($scope.polylines) {
         $scope.polylines.setMap(null);
       }
-      $scope.hideLayers = !$scope.hideLayers;
     }
+
+    $scope.hideLayers = !$scope.hideLayers;
   };
 
   // renders the cloud and weather layers
@@ -215,7 +222,6 @@ angular.module('app.controllers', [])
     if ($scope.hideWeather) {
       // renders cloud layer
       $scope.cloudLayer = new google.maps.weather.CloudLayer();
-
       $scope.cloudLayer.setMap($scope.map);
 
       // renders weather layer
@@ -234,15 +240,13 @@ angular.module('app.controllers', [])
         alert('The current temperature at ' + event.featureDetails.location + ' is '
           + event.featureDetails.current.temperature + ' degrees.');
       });
-
-      $scope.hideWeather = !$scope.hideWeather;
     } else {
       // hides cloud and weather layers
       $scope.cloudLayer.setMap(null);
       $scope.weatherLayer.setMap(null);
-
-      $scope.hideWeather = !$scope.hideWeather;
     }
+
+    $scope.hideWeather = !$scope.hideWeather;
   };
 }])
 
