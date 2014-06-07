@@ -111,11 +111,11 @@ angular.module('app.controllers', [])
     console.log('error: ', err);
   });
 
-  // make a request to the server for direction options
-  $scope.getDirectionOptions = function() {
+  // makes requests to get directions
+  $scope.getDirections = function(clientLocation, getDirectionsNow) {
     ServerReq.getReq($rootScope.localServerURL + '/routes?email=' + $rootScope.userId)
     .then(function(serverData) {
-      return GetGoogleMapDirections.getDirections(serverData.data);
+      return GetGoogleMapDirections.getDirections(serverData.data, clientLocation, getDirectionsNow);
     })
     .then(function(directionsData) {
       directionsRenderer.setDirections(directionsData);

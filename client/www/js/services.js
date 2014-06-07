@@ -42,17 +42,30 @@ angular.module('app.services', [])
   var directionsService = new google.maps.DirectionsService();
 
   return {
-    getDirections: function(directionOptions) {
+    getDirections: function(directionOptions, clientLocation, getDirectionsNow) {
       var deferred = $q.defer();
-      directionsService.route({
-        origin: new google.maps.LatLng(directionOptions.origin.lat, directionOptions.origin.lng),
-        destination: new google.maps.LatLng(directionOptions.destination.lat, directionOptions.destination.lng),
-        travelMode: google.maps.TravelMode.TRANSIT,
-        transitOptions: {
-          // departureTime: new Date(directionOptions.departureTime),
-          arrivalTime: new Date(directionOptions.arrivalTime)
-        }
-      }, function(directions, status) {
+
+      if (getDirectionsNow) {
+        var routeOptions = {
+          origin: clientLocation,
+          destination: new google.maps.LatLng(directionOptions.destination.lat, directionOptions.destination.lng),
+          travelMode: google.maps.TravelMode.TRANSIT,
+          transitOptions: {
+            departureTime: new Date(),
+          }
+        };
+      } else {
+        var routeOptions = {
+          origin: new google.maps.LatLng(directionOptions.origin.lat, directionOptions.origin.lng),
+          destination: new google.maps.LatLng(directionOptions.destination.lat, directionOptions.destination.lng),
+          travelMode: google.maps.TravelMode.TRANSIT,
+          transitOptions: {
+            arrivalTime: new Date(directionOptions.arrivalTime)
+          }
+        };
+      }
+
+      directionsService.route(routeOptions, function(directions, status) {
         if (status === google.maps.DirectionsStatus.OK) {
           deferred.resolve(directions);
         } else {

@@ -3,8 +3,11 @@
     <div id="map"></div>
     
     <div class="row">
-      <div class="col col-50">
-        <button class="button button-positive" ng-click="getDirectionOptions()">Get My Route</button>
+      <div class="col col-25">
+        <button class="button button-small button-positive" ng-click="getDirections()">Get My Route</button>
+      </div>
+      <div class="col col-25">
+        <button class="button button-small button-positive" ng-click="getDirections(clientLocation, true)">Get Route Now</button>
       </div>
       <div class="col">
         <label class="checkbox">
