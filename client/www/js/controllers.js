@@ -255,6 +255,7 @@ angular.module('app.controllers', [])
     ServerReq.postReq($rootScope.localServerURL + '/user', {user: user})
     .then(function(serverData) {
       // get the google map directions from the google directions API
+      serverData.data.workTime = moment(serverData.data.workTime, "HH:mm");
       return GetGoogleMapDirections.getDirections(serverData.data);
     })
     .then(function(directionsData) {
@@ -271,6 +272,8 @@ angular.module('app.controllers', [])
       console.log('error: ', err);
     });
   };
+
+  //moment($rootScope.workTime, "HH:mm");
 
 /*
   var p_timeout = function(time) {
