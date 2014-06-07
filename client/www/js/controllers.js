@@ -10,7 +10,7 @@ angular.module('app.controllers', [])
       "response_type=token&" + 
       "scope=" + authOptions.scope;
 
-    var authWindow = window.open(authUrl, '_blank', 'location=no,toolbar=no');
+    var authWindow = window.open(authUrl, '_blank', 'location=no, toolbar=no');
 
     $(authWindow).on('loadstart', function(event) {
       var url = event.originalEvent.url;
@@ -38,9 +38,9 @@ angular.module('app.controllers', [])
   $scope.auth = function() {
     var authOptions = {
       client_id: '243623987042-20jcc57di4ol4u36jr3cvidv66h0h6mi.apps.googleusercontent.com',
-      client_secret: 'topsecret!',
+      client_secret: 'topsecret',
       redirect_uri: 'http://localhost',
-      scope: 'https://www.googleapis.com/auth/plus.login'
+      scope: 'email'
     };
 
     p_auth(authOptions)
@@ -66,9 +66,9 @@ angular.module('app.controllers', [])
   $scope.markers = [];
   $scope.polylines;
   $scope.hideLayers = true;
-  $scope.hideLayersButtonText = "Show Locations";
+  $scope.hideLayersButtonText = "Locations";
   $scope.hideWeather = true;
-  $scope.hideWeatherButtonText = "Show Weather";
+  $scope.hideWeatherButtonText = "Weather";
 
   // instantiates the renderer object for google map directions
   var directionsRenderer = new google.maps.DirectionsRenderer();
@@ -187,15 +187,14 @@ angular.module('app.controllers', [])
       $scope.polylines = new google.maps.Polyline({
         path: $scope.geolocations,
         geodesic: true,
-        strokeColor: 'blue',
-        strokeOpacity: 0.8,
+        strokeColor: "blue",
+        strokeOpacity: 1,
         strokeWeight: 1
       });
 
       $scope.polylines.setMap($scope.map);
 
       $scope.hideLayers = !$scope.hideLayers;
-      $scope.hideLayersButtonText = "Hide Locations";
     } else {
       // hides all markers
       for (var i = 0; i < $scope.markers.length; i++) {
@@ -208,7 +207,6 @@ angular.module('app.controllers', [])
         $scope.polylines.setMap(null);
       }
       $scope.hideLayers = !$scope.hideLayers;
-      $scope.hideLayersButtonText = "Show Locations";
     }
   };
 
@@ -238,19 +236,17 @@ angular.module('app.controllers', [])
       });
 
       $scope.hideWeather = !$scope.hideWeather;
-      $scope.hideWeatherButtonText = "Hide Weather";
     } else {
       // hides cloud and weather layers
       $scope.cloudLayer.setMap(null);
       $scope.weatherLayer.setMap(null);
 
       $scope.hideWeather = !$scope.hideWeather;
-      $scope.hideWeatherButtonText = "Show Weather";
     }
   };
 }])
 
-.controller('SettingsCtrl', ['$rootScope', '$scope', '$state', 'ServerReq', 'GetGoogleMapDirections', 'Notify', '$q', function($rootScope, $scope, $state, ServerReq, GetGoogleMapDirections, Notify, $q) {
+.controller('SettingsCtrl', ['$rootScope', '$scope', '$state', 'ServerReq', 'GetGoogleMapDirections', 'Notify', '$q', '$http', function($rootScope, $scope, $state, ServerReq, GetGoogleMapDirections, Notify, $q, $http) {
   // posts user identifier and settings to server
   $scope.postSettings = function(user) {
     user.email = $rootScope.userId;
@@ -288,11 +284,42 @@ angular.module('app.controllers', [])
     return deferred.promise;
   };
 
-  window.plugin.notification.local.add({
-    date: new Date(new Date().getTime() + 10000),
-    repeat: 'daily',
-    message: "You wouldn't want to be late...again.",
-    title: "It might be time for you to leave, friend."
+  // test functioncality code
+  var directionsService = new google.maps.DirectionsService();
+  var request = {
+    origin: new google.maps.LatLng(37.4683909618184, -122.21089453697205),
+    destination: new google.maps.LatLng(37.7683909618184, -122.51089453697205),
+    travelMode: google.maps.TravelMode.DRIVING
+  };
+  directionsService.route(request, function(directions, status) {
+    if (status === google.maps.DirectionsStatus.OK) {
+      $rootScope.newDirections = directions;
+      console.log($rootScope.newDirections);
+    }
   });
+
+  // var obj = window.plugin.notification.local;
+
+  $scope.postSettings = function(user){
+    // var obj = window.plugin.notification.local;
+    // console.log('data sent to server: ', user);
+    user.email = 'nicksemail@gmail.com';
+    ServerReq.postReq($rootScope.localServerURL + '/user', {user: user})
+    .then(function(data) {
+      // use settimeout to invoke another get request to routes at the time returned by the server
+      Notify.notify(new Date().getTime() + 10000, obj);
+      return p_timeout(data.time);
+    })
+    .then(function(data) {
+      // parse out duration from the google maps directions object
+        // notify the user 10 minutes before he/she needs to leave
+      // render the directions object on the map
+      console.log('hello, world');
+      $rootScope.newDirections = data.route;
+    })
+    .catch(function(err) {
+      console.log('error: ', err);
+    });
+  };
 */
 }]);
