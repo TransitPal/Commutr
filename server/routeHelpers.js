@@ -1,17 +1,19 @@
-var models = require('../db/models/user');
-var db = require('../db/dbHelpers');
-var User = require('../db/models/user').User;
-var maps = require('./mapUtils');
-var utils = require('./utils.js');
-var fs = require('fs');
+var db = require('../db/dbHelpers'),
+    User = require('../db/models/user').User,
+    maps = require('./mapUtils'),
+    utils = require('./utils.js'),
+    fs = require('fs');
 
-exports.placeholder = function(req, res){
+var placeholder = function(req, res){
   res.send(200,'^_^');
 };
 
-exports.serveIndex = function(req, res){
+var serveIndex = function(req, res){
   fs.readFile('./client/www/index.html', function(err, data){
-    if (err) return err;
+    if (err) {
+      console.error(err);
+      return res.send(500, err);
+    }
     res.set({'Content-Type': 'text/html'});
     res.send(200, data);
   });
@@ -19,22 +21,27 @@ exports.serveIndex = function(req, res){
 
 // Returns routing object with origin, destination, and arrival time
 // Based on user's routine and current time of day
-exports.getRoutes = function(req, res) {
+var getRoutes = function(req, res) {
+  if (!req.query.email) {
+    return res.send(400);
+  }
+
   db.getUser(req.query.email)
   .then(function(user){
-    console.log('user', user)
     res.send(200, utils.getNextRoute(user));
   }, function(err) {
-    console.log('Errorrrrrred!!!!');
+    console.error('ERROR:', err);
     res.send(500, err);
   });
 };
 
 // Saves new user and reponds with next route
-exports.saveUser = function(req, res){
-  console.log(req.body);
+var saveUser = function(req, res){
+  if (!req.body.user) {
+    return res.send(400);
+  }
+
   var settings = req.body.user;
-  console.log(settings);
   var email = settings.email;
   
   db.getUser(email)
@@ -51,7 +58,7 @@ exports.saveUser = function(req, res){
     } else {
       // Create user
       // Correctly structures user object for database
-      user = new models.User({
+      user = new User({
         name: settings.name,
         email: settings.email,
         homeAddress: settings.homeAddress,
@@ -59,7 +66,8 @@ exports.saveUser = function(req, res){
         routine: {
           workTime: settings.workTime,
           homeTime: settings.homeTime
-        }
+        },
+        locations: []
       });
     }
 
@@ -82,7 +90,6 @@ exports.saveUser = function(req, res){
 
           // Responds to client with routing object
           res.send(201, utils.getNextRoute(user));
-
           console.log('User settings saved', user);
         });
 
@@ -102,13 +109,34 @@ exports.saveUser = function(req, res){
   });
 };
 
-// Deletes user from database and responds with 
-exports.deleteUser = function(req, res){
+var saveLocation = function(req, res) {
+  if (!req.params.userId) {
+    return res.send(400);
+  }
+  var userId = req.params.userId;
+  return res.send(200, userId);
+};
+
+// Deletes user from database
+var deleteUser = function(req, res){
+  if (!req.params.userId) {
+    return res.send(400);
+  }
   var email = req.params.userId;
-  console.log('userId?',email);
   User.findOneAndRemove({email:email}, function(err, data){
-    console.log('err', err);
-    console.log('data',data);
-    res.send(418, {err:err, data:data})
-  })
-}
+    if(err) {
+      console.error(err);
+      return res.send(500);
+    }
+    res.send(418, {err:err, data:data});
+  });
+};
+
+module.exports = {
+  placeholder: placeholder,
+  serveIndex: serveIndex,
+  getRoutes: getRoutes,
+  saveUser: saveUser,
+  saveLocation: saveLocation,
+  deleteUser: deleteUser
+};
