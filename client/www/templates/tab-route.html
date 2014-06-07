@@ -1,6 +1,13 @@
-<ion-view title="My Route">
-  <ion-content class="has-header padding" scroll="true">    
-    <div class="row">
+<ion-view title="Map">
+  <ion-nav-buttons side="left">
+    <button class="button button-small button-outline button-positive" ng-click="getDirections()">Get My Route</button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side="right">
+    <button class="button button-small button-outline button-positive" ng-click="getDirections(clientLocation, true)">Get Route Now</button>
+  </ion-nav-buttons>
+
+  <ion-content class="has-header padding" scroll="true">
+    <!-- <div class="row">
       <div class="col">
         <button class="button button-outline button-small button-positive" ng-click="getDirections()">Get My Route</button>
       </div>
@@ -19,9 +26,25 @@
           {{hideWeatherButtonText}}
         </label>
       </div>
-    </div>
+    </div> -->
 
     <div id="map"></div>
+
+    <div class="row">
+      <div class="col">
+        <label class="checkbox checkbox-royal">
+          <input ng-click="showOrHideLayers()" type="checkbox">
+          {{hideLayersButtonText}}
+        </label>
+      </div>
+      <div class="col">
+        <label class="checkbox checkbox-royal">
+          <input ng-click="showOrHideWeather()" type="checkbox">
+          {{hideWeatherButtonText}}
+        </label>
+      </div>
+    </div>
+
     <button ng-show="showDirectionsButton" class="button button-small button-block button-positive" ng-click="openModal()">Show Directions</button>
   </ion-content>
 </ion-view>
@@ -32,7 +55,7 @@
       <h1 class="title">Directions</h1>
     </ion-header-bar>
     <ion-content class="padding">
-      <button class="button button-small button-block button-positive" ng-click="modal.hide()">Show Map</button>
+      <button class="button button-small button-block button-positive" ng-click="modal.hide()">Go Back</button>
       <div id="panel"></div>
     </ion-content>
   </div>
