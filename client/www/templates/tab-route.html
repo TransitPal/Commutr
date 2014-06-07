@@ -32,30 +32,40 @@
 
     <div class="row">
       <div class="col">
-        <label class="checkbox checkbox-royal">
-          <input ng-click="showOrHideLayers()" type="checkbox">
-          {{hideLayersButtonText}}
-        </label>
+        <ul class="list">
+          <li class="item item-checkbox slim-checkbox">
+            <label class="checkbox checkbox-royal">
+              <input ng-click="showOrHideLayers()" type="checkbox">
+            </label>
+            {{hideLayersButtonText}}
+          </li>
+        </ul>
       </div>
       <div class="col">
-        <label class="checkbox checkbox-royal">
-          <input ng-click="showOrHideWeather()" type="checkbox">
-          {{hideWeatherButtonText}}
-        </label>
+        <ul class="list">
+          <li class="item item-checkbox slim-checkbox">
+            <label class="checkbox checkbox-royal">
+              <input ng-click="showOrHideWeather()" type="checkbox">
+            </label>
+            {{hideWeatherButtonText}}
+          </li>
+        </ul>
       </div>
     </div>
 
-    <button ng-show="showDirectionsButton" class="button button-small button-block button-positive" ng-click="openModal()">Show Directions</button>
+    <button ng-show="showDirectionsButton" class="button button-small button-block button-positive" ng-click="openModal()">
+      Show Directions List
+    </button>
   </ion-content>
 </ion-view>
 
 <script id="panel.html" type="text/ng-template">
   <div class="modal">
     <ion-header-bar>
+      <button class="button button-small button-outline button-positive" ng-click="modal.hide()">Go Back</button>
       <h1 class="title">Directions</h1>
     </ion-header-bar>
     <ion-content class="padding">
-      <button class="button button-small button-block button-positive" ng-click="modal.hide()">Go Back</button>
       <div id="panel"></div>
     </ion-content>
   </div>

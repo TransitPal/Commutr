@@ -6,3 +6,9 @@
 .scroll {
   height: 100%;
 }
+
+.slim-checkbox {
+  border: 0;
+  padding: 5px;
+  padding-left: 58px;
+}
