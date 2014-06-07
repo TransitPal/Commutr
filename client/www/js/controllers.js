@@ -260,10 +260,10 @@ angular.module('app.controllers', [])
     .then(function(directionsData) {
       // store the directions on the rootScope for access in the routes controller
       $rootScope.directionOptionsFromSettings = directionsData;
-      var transitTime = directionsData.routes[0].legs[0].duration.value * 1000 || directionsData.routes[0].legs[0].steps[0].duration.value * 1000;
-      var noteTime = new Date(new Date().setHours(user.workTime, 0, 0, 0) - transitTime);
-      alert('TransitTime: ' + transitTime);
-      alert('Notify at ' + noteTime);
+      //var transitTime = directionsData.routes[0].legs[0].duration.value * 1000 //|| directionsData.routes[0].legs[0].steps[0].duration.value * 1000;
+      var noteTime = directionsData.routes[0].legs[0].departure_time;  //new Date(new Date().setHours(user.workTime, 0, 0, 0) - transitTime);
+      //alert('TransitTime: ' + transitTime);
+      //alert('Notify at ' + noteTime);
       Notify.notify(noteTime, obj);
       $state.go('tab.route');
     })
