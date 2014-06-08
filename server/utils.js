@@ -1,15 +1,15 @@
 var maps = require('./mapUtils.js');
 
-var getNextTime = function(time) {
+var getNextTime = function(timeObj) {
   var now = new Date();
   var testTime = new Date();
-  testTime.setHours(time, 0, 0, 0);
+  testTime.setHours(timeObj.hour, timeObj.minutes, 0, 0);
 
   if (now < testTime) {
     return testTime;
   } else {
     var tomorrow = now.getDate() + 1;
-    var nextTime = new Date(now.getFullYear(), now.getMonth(), tomorrow, time);
+    var nextTime = new Date(now.getFullYear(), now.getMonth(), tomorrow, timeObj.hour, timeObj.minutes);
     return nextTime;
   }
 };
@@ -43,7 +43,13 @@ var getNextRoute = function(user) {
   return { origin: origin, destination: destination, arrivalTime: arrivalTime };
 };
 
+var convertTimeStringToObject = function(timestr) {
+  var time = timestr.split(':');
+  return {hour: time[0], minutes: time[1]};
+};
+
 module.exports = {
   getNextTime: getNextTime,
-  getNextRoute: getNextRoute
+  getNextRoute: getNextRoute,
+  convertTimeStringToObject: convertTimeStringToObject
 };
