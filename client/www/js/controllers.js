@@ -118,22 +118,22 @@ angular.module('app.controllers', [])
     scope: $scope,
     animation: "fade-in"
   }).then(function(modal) {
-    $scope.modal = modal;
+    $scope.directionsModal = modal;
   });
 
   $scope.openModal = function() {
-    $scope.modal.show();
+    $scope.directionsModal.show();
     // sets the directions panel for the renderer object
     directionsRenderer.setPanel(document.getElementById("panel"));
   };
 
   $scope.closeModal = function() {
-    $scope.modal.hide();
+    $scope.directionsModal.hide();
   };
 
   var removeModal = function() {
-    if ($scope.modal) {
-      $scope.modal.remove();
+    if ($scope.directionsModal) {
+      $scope.directionsModal.remove();
     }
   };
 

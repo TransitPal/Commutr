@@ -1,24 +1,23 @@
 <ion-view title="Settings">
   <ion-content class="has-header padding" scroll="false">
-    <label class="item item-input">
+    <!-- <label class="item item-input">
       <span class="input-label">Home Address</span>
       <input ng-model="user.homeAddress" type="text" placeholder="94102">
     </label>
     <label class="item item-input">
       <span class="input-label">Work Address</span>
       <input ng-model="user.workAddress" type="text" placeholder="94404">
-    </label>
+    </label> -->
     <label class="item item-input">
-      <span class="input-label">Work Start</span>
+      <span class="input-label">My Work Day Starts @</span>
       <input ng-model="user.workTime" type="number" placeholder=9>
     </label>
     <label class="item item-input">
-      <span class="input-label">Work End</span>
+      <span class="input-label">My Work Day Ends @</span>
       <input ng-model="user.homeTime" type="number" placeholder=18>
     </label>
 
-    <br>
-    <button class="button button-block button-positive" ng-click="postSettings(user)">
+    <button class="button button-small button-block button-positive" ng-click="postSettings(user)">
       <i class="icon ion-compose"></i>
       Save
     </button>
