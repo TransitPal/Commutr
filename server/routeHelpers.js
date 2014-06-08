@@ -42,6 +42,7 @@ var saveUser = function(req, res){
   }
 
   var settings = req.body.user;
+  console.log(settings);
   var email = settings.email;
   
   db.getUser(email)
@@ -50,7 +51,8 @@ var saveUser = function(req, res){
       // Update user
       for (var option in settings) {
         if(option === 'homeTime' || option === 'workTime'){
-          user.routine[option] = settings[option];
+
+          user.routine[option] = utils.convertTimeStringToObject(settings[option]);
         } else {
           user[option] = settings[option];
         }
@@ -64,8 +66,8 @@ var saveUser = function(req, res){
         homeAddress: settings.homeAddress,
         workAddress: settings.workAddress,
         routine: {
-          workTime: settings.workTime,
-          homeTime: settings.homeTime
+          workTime: utils.convertTimeStringToObject(settings.workTime),
+          homeTime: utils.convertTimeStringToObject(settings.homeTime)
         },
         locations: []
       });
