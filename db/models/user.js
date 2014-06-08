@@ -7,8 +7,6 @@ exports.User = db.model('User', new db.Schema({
   homeLocation: {lat: Number, lng: Number},
   workAddress: String,
   workLocation: {lat: Number, lng: Number},
-  routine: {
-    workTime: Number,
-    homeTime: Number
-  }
+  routine: {workTime: Number, homeTime: Number},
+  locations: [{ time: Date, location: {lat: Number, lng: Number} }]
 }));
