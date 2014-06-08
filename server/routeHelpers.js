@@ -116,6 +116,7 @@ var saveLocation = function(req, res) {
     return res.send(400);
   }
   var userId = req.params.userId;
+  console.log(req.body);
   return res.send(200, userId);
 };
 
