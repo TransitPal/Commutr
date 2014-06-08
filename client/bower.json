@@ -5,6 +5,7 @@
     "ionic": "driftyco/ionic-bower#1.0.0-beta.6"
   },
   "dependencies": {
-    "jquery": "~2.1.1"
+    "jquery": "~2.1.1",
+    "momentjs": "~2.6.0"
   }
 }

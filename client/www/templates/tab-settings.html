@@ -9,12 +9,12 @@
       <input ng-model="user.workAddress" type="text" placeholder="94404">
     </label> -->
     <label class="item item-input">
-      <span class="input-label">My Work Day Starts @</span>
-      <input ng-model="user.workTime" type="number" placeholder=9>
+      <span class="input-label">Work Start</span>
+      <input ng-model="user.workTime" type="time" placeholder=9>
     </label>
     <label class="item item-input">
-      <span class="input-label">My Work Day Ends @</span>
-      <input ng-model="user.homeTime" type="number" placeholder=18>
+      <span class="input-label">Work End</span>
+      <input ng-model="user.homeTime" type="time" placeholder=18>
     </label>
 
     <button class="button button-small button-block button-positive" ng-click="postSettings(user)">
