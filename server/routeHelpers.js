@@ -87,7 +87,7 @@ var saveUser = function(req, res){
         user.save(function(err,user){
           if(err) {
             res.send(500,err);
-            return console.error('Error:', err);
+            return console.error('ERROR:', err);
           }
 
           // Responds to client with routing object
@@ -116,8 +116,27 @@ var saveLocation = function(req, res) {
     return res.send(400);
   }
   var userId = req.params.userId;
-  console.log(req.body);
-  return res.send(200, userId);
+  
+  db.getUser(req.params.userId)
+  .then(function(user) {
+    var locationData = req.body;
+    var locationObj = {
+      time: new Date(locationData.location.recorded_at).getTime(),
+      location: {
+        lat: locationData.location.latitude,
+        lng: locationData.location.longitude
+      }
+    };
+    user.locations.push(locationObj);
+    user.save(function(err, user) {
+      if (err) { 
+        res.send(500, err);
+        return console.err('ERROR:', err);
+      } else {
+        res.send(200, userId);
+      }
+    });
+  });
 };
 
 // Deletes user from database

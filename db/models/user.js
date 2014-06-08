@@ -9,5 +9,5 @@ exports.User = db.model('User', new db.Schema({
   workLocation: {lat: Number, lng: Number},
   routine: {workTime: {hour: Number, minutes: {type: Number, default: 0}},
             homeTime: {hour: Number, minutes: {type: Number, default: 0}}},
-  locations: [{ time: Date, location: {lat: Number, lng: Number} }]
+  locations: [{ time: Number, location: {lat: Number, lng: Number} }]
 }));
