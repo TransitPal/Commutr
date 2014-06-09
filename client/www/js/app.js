@@ -15,9 +15,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services'])
 
   // Customizations
   $rootScope.maxMarkers = 100;
-  // $rootScope.localServerURL = 'http://localhost:8080/api/v1';
   $rootScope.localServerURL = 'http://commutr-test.azurewebsites.net/api/v1';
-  // $rootScope.userId = "118390871090691148775";
 
   // Event listeners
   document.addEventListener("deviceready", function() {
@@ -68,6 +66,5 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services'])
     }
   })
 
-  // $urlRouterProvider.otherwise('/tab/route');
   $urlRouterProvider.otherwise('/login');
 }]);

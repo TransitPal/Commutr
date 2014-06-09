@@ -150,7 +150,7 @@ angular.module('app.controllers', [])
 
   $ionicModal.fromTemplateUrl('panel.html', {
     scope: $scope,
-    animation: "fade-in"
+    animation: "slide-in-up"
   }).then(function(modal) {
     $scope.directionsModal = modal;
   });
