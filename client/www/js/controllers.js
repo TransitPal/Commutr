@@ -81,7 +81,7 @@ angular.module('app.controllers', [])
         desiredAccuracy: 10,
         stationaryRadius: 10,
         distanceFilter: 10,
-        debug: true
+        debug: false
       });
 
       // turn on background geolocation
