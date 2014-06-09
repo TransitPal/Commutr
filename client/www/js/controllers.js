@@ -185,14 +185,14 @@ angular.module('app.controllers', [])
       $scope.showDirectionsButton = true;
 
 
-      var noteTime = directionsData.routes[0].legs[0].departure_time;
+      var noteTime = new Date(directionsData.routes[0].legs[0].departure_time.value).getTime();
   
       var notifications = window.plugin.notification.local;
       notifications.add({
         message: 'Almost time to go!',
         title: '5 more minutes!',
         // Set notification for 5 minutes before departure time
-        date: new Date(noteTime * 1000 - 300000)
+        date: new Date(noteTime - 300000)
       });
 
 
@@ -243,7 +243,6 @@ angular.module('app.controllers', [])
         }
 
         // renders the new marker and recenters the map on that marker
-        // $scope.map.setCenter(newGeolocation);
         marker.setMap($scope.map);
         $scope.clientMarker = marker;
 
@@ -341,20 +340,16 @@ angular.module('app.controllers', [])
     .then(function(directionsData) {
       // store the directions on the rootScope for access in the routes controller
       $rootScope.directionOptionsFromSettings = directionsData;
-      //var transitTime = directionsData.routes[0].legs[0].duration.value * 1000 //|| directionsData.routes[0].legs[0].steps[0].duration.value * 1000;
-      var noteTime = directionsData.routes[0].legs[0].departure_time;  //new Date(new Date().setHours(user.workTime, 0, 0, 0) - transitTime);
+      var noteTime = new Date(directionsData.routes[0].legs[0].departure_time.value).getTime();
   
       var notifications = window.plugin.notification.local;
       notifications.add({
         message: 'Almost time to go!',
         title: '5 more minutes!',
         // Set notification for 5 minutes before departure time
-        date: new Date(noteTime * 1000 - 300000)
+        date: new Date(noteTime - 300000)
       });
 
-      //alert('TransitTime: ' + transitTime);
-      //alert('Notify at ' + noteTime);
-      // Notify.notify(noteTime, obj);
       $state.go('tab.route');
     })
     .catch(function(err) {
@@ -362,62 +357,4 @@ angular.module('app.controllers', [])
     });
   };
 
-  //moment($rootScope.workTime, "HH:mm");
-
-/*
-  var p_timeout = function(time) {
-    var diffTime = Number(time) - Number(new Date());
-    var deferred = $q.defer();
-
-    setTimeout(function() {
-      ServerReq.getReq($rootScope.localServerURL + '/route')
-      .then(function(data) {
-        deferred.resolve(data);
-      })
-      .catch(function(err) {
-        deferred.reject(err);
-      });
-    }, diffTime);
-
-    return deferred.promise;
-  };
-
-  // test functioncality code
-  var directionsService = new google.maps.DirectionsService();
-  var request = {
-    origin: new google.maps.LatLng(37.4683909618184, -122.21089453697205),
-    destination: new google.maps.LatLng(37.7683909618184, -122.51089453697205),
-    travelMode: google.maps.TravelMode.DRIVING
-  };
-  directionsService.route(request, function(directions, status) {
-    if (status === google.maps.DirectionsStatus.OK) {
-      $rootScope.newDirections = directions;
-      console.log($rootScope.newDirections);
-    }
-  });
-
-  // var obj = window.plugin.notification.local;
-
-  $scope.postSettings = function(user){
-    // var obj = window.plugin.notification.local;
-    // console.log('data sent to server: ', user);
-    user.email = 'nicksemail@gmail.com';
-    ServerReq.postReq($rootScope.localServerURL + '/user', {user: user})
-    .then(function(data) {
-      // use settimeout to invoke another get request to routes at the time returned by the server
-      Notify.notify(new Date().getTime() + 10000, obj);
-      return p_timeout(data.time);
-    })
-    .then(function(data) {
-      // parse out duration from the google maps directions object
-        // notify the user 10 minutes before he/she needs to leave
-      // render the directions object on the map
-      console.log('hello, world');
-      $rootScope.newDirections = data.route;
-    })
-    .catch(function(err) {
-      console.log('error: ', err);
-    });
-  };
-*/
 }]);
