@@ -1,15 +1,17 @@
 var maps = require('./mapUtils.js');
 
 var getNextTime = function(timeObj) {
+  hour = (timeObj.hour + 7) % 24;
+  minutes = timeObj.minutes;
   var now = new Date();
   var testTime = new Date();
-  testTime.setHours(timeObj.hour, timeObj.minutes, 0, 0);
+  testTime.setHours(hour, minutes, 0, 0);
 
   if (now < testTime) {
     return testTime;
   } else {
     var tomorrow = now.getDate() + 1;
-    var nextTime = new Date(now.getFullYear(), now.getMonth(), tomorrow, timeObj.hour, timeObj.minutes);
+    var nextTime = new Date(now.getFullYear(), now.getMonth(), tomorrow, hour, minutes);
     return nextTime;
   }
 };
@@ -27,7 +29,7 @@ var getNextRoute = function(user) {
   var origin, destination;
   var arrivalTime;
 
-  if (now < nextHomeTime && now < nextWorkTime) {
+  if (now < nextHomeTime && now.getDate() < nextWorkTime.getDate()) {
     // user is at work, wants to go home
     origin = user.workLocation;
     destination = user.homeLocation;
@@ -38,7 +40,6 @@ var getNextRoute = function(user) {
     destination = user.workLocation;
     arrivalTime = nextWorkTime.getTime();
   }
-
 
   return { origin: origin, destination: destination, arrivalTime: arrivalTime };
 };
