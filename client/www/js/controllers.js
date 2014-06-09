@@ -149,6 +149,19 @@ angular.module('app.controllers', [])
     .then(function(directionsData) {
       directionsRenderer.setDirections(directionsData);
       $scope.showDirectionsButton = true;
+
+
+      var noteTime = directionsData.routes[0].legs[0].departure_time;
+  
+      var notifications = window.plugin.notification.local;
+      notifications.add({
+        message: 'Almost time to go!',
+        title: '5 more minutes!',
+        // Set notification for 5 minutes before departure time
+        date: new Date(noteTime * 1000 - 300000)
+      });
+
+
     })
     .catch(function(err) {
       console.log('error: ', err);
@@ -284,7 +297,6 @@ angular.module('app.controllers', [])
   // posts user identifier and settings to server
   $scope.postSettings = function(user) {
     user.email = $rootScope.userId;
-    var obj = window.plugin.notification.local;
     console.log('user: ', user);
     ServerReq.postReq($rootScope.localServerURL + '/user', {user: user})
     .then(function(serverData) {
@@ -297,9 +309,18 @@ angular.module('app.controllers', [])
       $rootScope.directionOptionsFromSettings = directionsData;
       //var transitTime = directionsData.routes[0].legs[0].duration.value * 1000 //|| directionsData.routes[0].legs[0].steps[0].duration.value * 1000;
       var noteTime = directionsData.routes[0].legs[0].departure_time;  //new Date(new Date().setHours(user.workTime, 0, 0, 0) - transitTime);
+  
+      var notifications = window.plugin.notification.local;
+      notifications.add({
+        message: 'Almost time to go!',
+        title: '5 more minutes!',
+        // Set notification for 5 minutes before departure time
+        date: new Date(noteTime * 1000 - 300000)
+      });
+
       //alert('TransitTime: ' + transitTime);
       //alert('Notify at ' + noteTime);
-      Notify.notify(noteTime, obj);
+      // Notify.notify(noteTime, obj);
       $state.go('tab.route');
     })
     .catch(function(err) {
