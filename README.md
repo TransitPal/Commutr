@@ -30,7 +30,7 @@ which requires the Java Development Kit.
    bower install
    ```
 6. For development, run ```mongod``` from the root folder.
-When you're ready to build, run ```gulp buildAnd```
+7. When you're ready to build, run ```gulp buildAnd```
 
 ###File guide
 1. Build tasks - /gulpfile.js
