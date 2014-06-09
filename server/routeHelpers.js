@@ -42,7 +42,6 @@ var saveUser = function(req, res){
   }
 
   var settings = req.body.user;
-  console.log(settings);
   var email = settings.email;
   
   db.getUser(email)
@@ -79,9 +78,14 @@ var saveUser = function(req, res){
     .then(function(homeLocation) {
       maps.getLatLong(user.workAddress)
       .then (function(workLocation) {
+
         // Set user home and work locations
-        user.homeLocation = homeLocation;
-        user.workLocation = workLocation;
+        if (settings.homeAddress) {
+          user.homeLocation = homeLocation;
+        }
+        if (settings.workAddress) {
+          user.workLocation = workLocation;
+        }
         
         // Save user
         user.save(function(err,user){
