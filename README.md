@@ -1,3 +1,28 @@
+
+###To Install
+1. Make sure you have node.js installed, and run 
+   ```
+   npm install -g bower
+   ```
+2. To build a working copy of the app, you will need to have the Android SDK installed,
+which requires the Java Development Kit.
+
+3. Fork the repo, then 
+   ```
+   git clone https://github.com/[YOUR USERNAME]/Commutr/
+   ```
+4. cd to the root of your repo, and 
+   ```
+   npm install
+   ```
+5. cd to the client folder, and 
+   ```
+   bower install
+   ```
+6. For development, run ```mongod``` from the root folder.
+When you're ready to build, run ```gulp buildAnd```
+
+
 ###Contributors Guide
 
 1. Fork TransitPal/Commutr to contribute
