@@ -53,6 +53,40 @@ angular.module('app.controllers', [])
     })
     .then(function(tokenInfo) {
       $rootScope.userId = tokenInfo.data.user_id;
+
+      // Set up background geolocation
+      var bgGeo = window.plugins.backgroundGeoLocation;
+
+      var bgGeoCallback = function(location) {
+        ServerReq.postReq($rootScope.localServerURL + '/user/' + $rootScope.userId + '/location', 
+              { time: new Date().getTime, location: {lat: location.latitude, lng: location.longitude}})
+        .then(function() {
+          bgGeo.finish();
+        });
+      };
+
+      var bgGeoFailure = function(err) {
+        console.error('ERROR: ', err);
+      };
+
+      bgGeo.configure(bgGeoCallback, bgGeoFailure, {
+        url: $rootScope.localServerURL + '/user/' + $rootScope.userId + '/location',
+        params: {                                              
+          time: new Date().getTime(), 
+          location: {
+            lat: location.latitude, 
+            lng: location.longitude
+          }
+        },
+        desiredAccuracy: 10,
+        stationaryRadius: 10,
+        distanceFilter: 10,
+        debug: true
+      });
+
+      // turn on background geolocation
+      bgGeo.start();
+
       $state.go('tab.settings');
     })
     .catch(function(err) {
