@@ -7,7 +7,7 @@
 
 
 ###OAuth Login
-  Google's OAuth 2.0 Login provides a secure way of authenticating users. Embedding the Google login button opens the authentication dialogue in a new browser window. In order to implement this feature in Ionic, we had to tap in to Cordova's InAppBrowser feature, which allowed us to direct the user through the login process, and extract the returned access token from the URL to which Google redirects the browser following a successful login. This technique 
+  Google's OAuth 2.0 Login provides a secure way of authenticating users. Embedding the Google login button opens the authentication dialogue in a new browser window. In order to implement this feature in Ionic, we had to tap in to Cordova's InAppBrowser feature, which allowed us to direct the user through the login process, and extract the returned access token from the URL to which Google redirects the browser following a successful login. This technique enables a JavaScript web app authentication flow in a mobile environment.
 
 ###To Install
 1. Make sure you have node.js installed, and run 
