@@ -1,4 +1,14 @@
 
+###Description
+  Commutr is an intelligent commuting app that lets you know when to leave in order to get to work on time taking public transit. It leverages machine learning algorithms to learn your schedule. Commutr calculates when you need to be leaving, sends you a notification, and displays your suggested route.
+
+###Technical Stack
+  Commutr is a full stack app built in Angular and Ionic on the front end, Node.js, Express.js, and MongoDB on the back end. It leverages the Google Maps and Directions APIs. Cordova plugins give access to native Android features like geolocation and background notifications. Google OAuth 2.0 provides secure login.
+
+
+###OAuth Login
+  Google's OAuth 2.0 Login provides a secure way of authenticating users. Embedding the Google login button opens the authentication dialogue in a new browser window. In order to implement this feature in Ionic, we had to tap in to Cordova's InAppBrowser feature, which allowed us to direct the user through the login process, and extract the returned access token from the URL to which Google redirects the browser following a successful login. This technique 
+
 ###To Install
 1. Make sure you have node.js installed, and run 
    ```
@@ -22,6 +32,12 @@ which requires the Java Development Kit.
 6. For development, run ```mongod``` from the root folder.
 When you're ready to build, run ```gulp buildAnd```
 
+###File guide
+1. Build tasks - /gulpfile.js
+2. Client side logic - /client/www/js
+3. HTML templates - /client/index.html
+                 - /client/www/templates
+4. Server logic - /server
 
 ###Contributors Guide
 
